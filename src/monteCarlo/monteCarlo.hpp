@@ -5,6 +5,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <exception>
 
 #include "vertexAttrib.hpp"
 #include "../helperFunctions/helperFunctions.hpp"

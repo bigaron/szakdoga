@@ -5,7 +5,9 @@ std::vector<std::string> HelperFunctions::split(const std::string& line, const s
 	size_t idx = line.find(delim), prevIdx = 0ull;
 
 	while (idx != std::string::npos) {
-		values.push_back(line.substr(prevIdx, idx));
+		std::string substr = line.substr(prevIdx, idx);
+		if (substr == delim) return std::vector<std::string>();
+		values.push_back(substr);
 		prevIdx = idx;
 		idx = line.find(delim, idx+1ull);
 	}
