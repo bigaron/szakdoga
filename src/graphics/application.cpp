@@ -32,7 +32,7 @@ void Application::mainLoop(){
 	catch (const std::invalid_argument& ex) {
 		std::cerr << ex.what() << std::endl << "Returning..." << std::endl;
 	}
-
+	monteCarlo.printBoundaryPoints();
 	while (!glfwWindowShouldClose(this->window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

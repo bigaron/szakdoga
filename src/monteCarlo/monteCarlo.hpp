@@ -17,6 +17,7 @@ public:
 
 
 	void readInputFromFile(const char* filePath);
+	void printBoundaryPoints();
 };
 
 #endif // !MONTECARLO_HPP

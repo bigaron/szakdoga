@@ -9,7 +9,7 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 
 	std::string line;
 	size_t posDim, colDim;
-	std::string valueSep = ",", typeSep = ";" , inHouseSep = " ";
+	std::string valueSep = ";", typeSep = "," , inHouseSep = " ";
 	
 	std::getline(file, line);
 	std::vector<std::string> splitArr = HelperFunctions::split(line, " ");
@@ -25,7 +25,7 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 	if (ret.fail()) 
 		throw std::invalid_argument("The file format specified is not correct. Please consult the README file for the proper format. ");
 
-	if (line != " ") {
+	if (line != "") {
 		splitArr = HelperFunctions::split(line, " ");
 		if (splitArr.size() != 2) 
 			throw std::invalid_argument("The file format specified is not correct. Please consult the README file for the proper format. ");
@@ -71,5 +71,12 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 		}
 
 		this->boundingPoints.emplace_back(pos, col);
+		lineNum++;
+	}
+}
+
+void MonteCarlo::printBoundaryPoints() {
+	for (const VertexAttrib& bound : this->boundingPoints) {
+		std::cout << bound.pos.x << " " << bound.pos.y << " " << bound.pos.z << " " << bound.pos.w << " || " << bound.col.r << " " << bound.col.g << " " << bound.col.b << " " << bound.col.a << std::endl;
 	}
 }
