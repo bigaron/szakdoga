@@ -45,4 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\monteCarlo\shaders\monteCarlo.vert" />
+    <None Include="src\monteCarlo\shaders\monteCarlo.frag" />
+    <None Include="src\monteCarlo\shaders\monteCarlo.comp" />
+  </ItemGroup>
 </Project>

@@ -143,6 +143,11 @@
     <ClInclude Include="src\monteCarlo\vertexAttrib.hpp" />
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\monteCarlo\shaders\monteCarlo.comp" />
+    <None Include="src\monteCarlo\shaders\monteCarlo.frag" />
+    <None Include="src\monteCarlo\shaders\monteCarlo.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
