@@ -4,12 +4,13 @@
 #include <iostream>
 #include <string>
 #include <exception>
-
+#include <fstream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include "../monteCarlo/monteCarlo.hpp"
+#include "../helperFunctions/helperFunctions.hpp"
 
 class Application {
 	GLint windowWidth, windowHeight;
@@ -24,6 +25,8 @@ public:
 
 	void createContext();
 	void mainLoop();
+
+	void generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4> contP, float gran);
 
 	~Application() {
 		glfwDestroyWindow(window);

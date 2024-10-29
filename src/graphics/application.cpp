@@ -32,6 +32,8 @@ void Application::createContext(){
 	initiated = true;
 }
 
+
+
 void Application::mainLoop(){
 	if (!initiated) {
 		std::cout << "The OpenGL has not been initialized yet." << std::endl;
@@ -55,5 +57,23 @@ void Application::mainLoop(){
 
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
+	}
+}
+
+
+void Application::generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4> contP, float gran) {
+	std::vector<glm::vec4> points = HelperFunctions::calculateBezierCurve(contP, gran);
+
+	std::ofstream file(fileSrc);
+	file << 4 << " " << 4 << std::endl << std::endl;
+	size_t it = 0ull;
+	
+	glm::vec4 red(1, 0, 0, 1), green(0, 1, 0, 1), blue(0, 0, 1, 1);
+
+	for (const glm::vec4& point : points) {
+		if (it == 30ull) it = 0ull;
+		glm::vec4 col = it < 10ull ? red : it < 20ull ? blue : green;
+		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
+		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w;
 	}
 }
