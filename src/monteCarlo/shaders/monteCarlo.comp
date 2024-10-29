@@ -1,7 +1,194 @@
 #version 460 core
 layout(local_size_x = 32, local_size_y = 32, local_size_z = 1) in;
+layout(rgba32f, binding = 0) uniform image2D imgOut;
 
+#define M_PI 3.1415926535897932384626433832795
+const float inf = 100000000.f;
+
+// STRUCTS
+
+struct deviceVertexData{
+	vec4 pos;
+	vec4 col;
+};
+
+// 32 + 8 + 8 = 48 byte
+struct deviceNode{
+    vec4 lowerBound, upperBound; // 2 * 16
+    int leftChild, rightChild;  // 2 * 4
+    int itemStart, itemCount; // 2 * 4
+};
+
+// 48 + 4 + 12 = 64 byte
+struct deviceBVHElem{
+    deviceNode node; // 48 byte
+    int nodeIndex; // 4 byte
+    float padding1, padding2, padding3; // 3 * 4 byte
+};
+
+struct MonteCarloParams{
+	int vertexN;
+	int eps;
+	int sampleN;
+	int maxWalk;
+};
+
+struct indexStruct{
+    int pos;
+    int _padding1, _padding2, _padding3;
+};
+
+struct algorithmOptStruct{
+    int pass;
+    int _padding1, _padding2, _padding3;   
+};
+
+// SSBOs
+
+layout(std430, binding = 0) readonly buffer ssbo0{
+	deviceVertexData boundingPoints[];
+};
+
+layout(std430, binding = 1) readonly buffer ssbo1{
+    MonteCarloParams monteCarloParams;
+};
+
+layout(std430, binding = 2) readonly buffer ssbo2{
+    deviceBVHElem bvhElems[];
+};
+
+layout(std430, binding = 3) readonly buffer BVHIndexingSsbo {
+    indexStruct pointIndex[];
+};
+
+layout(std430, binding = 4) readonly buffer algorithmSsbo {
+    algorithmOptStruct opts;
+};
+
+//==============================================================
+//Rand function from Visual Studio
+//Actual source: https://www.shadertoy.com/view/WdXfzl
+int seed = 1;
+int rand(void) { seed = seed*0x343fd+0x269ec3; return (seed>>16)&32767; }
+float frand(void) { return float(rand())/32767.0; }
+void  srand( ivec2 p, int frame ){
+    int n = frame;
+    n = (n<<13)^n; n=n*(n*n*15731+789221)+1376312589; // by Hugo Elias
+    n += p.y;
+    n = (n<<13)^n; n=n*(n*n*15731+789221)+1376312589;
+    n += p.x;
+    n = (n<<13)^n; n=n*(n*n*15731+789221)+1376312589;
+    seed = n;
+}
+//==============================================================
+
+float distFromBVH(vec4 x_o, deviceBVHElem elem){
+    vec4 pb = min(max(x_o, elem.node.lowerBound), elem.node.upperBound);
+    return length(x_o - pb);
+}
+
+deviceVertexData closestPointOutsideBVH(vec4 x_o){
+    deviceBVHElem root = bvhElems[0];
+    deviceBVHElem  leftChild, rightChild;
+    bool done = false;
+
+    while(!done){
+        leftChild = bvhElems[root.node.leftChild];
+        rightChild = bvhElems[root.node.rightChild];
+        float lenLeft = distFromBVH(x_o, leftChild), lenRight = distFromBVH(x_o, rightChild);
+        if(lenLeft < lenRight) root = leftChild;
+        else root = rightChild;
+        if(root.node.itemCount > 0) done = true;
+    }
+
+    float closest = inf;
+    deviceVertexData value = boundingPoints[0];
+
+    for(int i = root.node.itemStart; i < root.node.itemStart + root.node.itemCount; ++i){
+        float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
+        if(dist < closest) {
+            closest = dist;
+            value = boundingPoints[pointIndex[i].pos];
+        }
+    }
+
+    return value;
+}
+
+bool isPointInBVH(vec4 x_o, deviceNode bound){
+    return x_o.x >= bound.lowerBound.x && x_o.x <= bound.upperBound.x && x_o.y >= bound.lowerBound.y && x_o.y <= bound.upperBound.y;
+}
+
+deviceVertexData closestPointBVH(vec4 x_o){
+    deviceBVHElem root = bvhElems[0];
+    deviceBVHElem leftChild, rightChild;
+    bool outside = false;
+
+    if(!isPointInBVH(x_o, root.node)) return closestPointOutsideBVH(x_o);
+    bool inLeft = false, inRight = false;
+
+    while(root.node.itemCount == 0){
+        inLeft = false;
+        inRight = false;
+        leftChild = bvhElems[root.node.leftChild];
+        rightChild = bvhElems[root.node.rightChild];
+        if(isPointInBVH(x_o, leftChild.node)) inLeft = true;
+        if(isPointInBVH(x_o, rightChild.node)) inRight = true;
+        
+        if(inLeft && inRight){
+            float val = frand();
+            if(val > 0.49) root = leftChild;
+            else root = rightChild;
+        } else if(inLeft) {
+            root = leftChild;
+        } else if(inRight) {
+            root = rightChild;
+        } else return closestPointOutsideBVH(x_o);
+    }
+
+    float closest = inf;
+    deviceVertexData point = boundingPoints[0];
+
+    for(int i = root.node.itemStart; i < root.node.itemStart + root.node.itemCount; ++i){
+        float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
+        if(closest > dist){
+            closest = dist;
+            point = boundingPoints[pointIndex[i].pos];
+        }
+    }
+
+    return point;
+}
+
+vec4 MonteCarloEstim(vec4 x_o){
+    int it = 0;
+    deviceVertexData closestPoint = closestPointBVH(x_o);
+    float radius = length(x_o - closestPoint.pos);
+    while(it < monteCarloParams.maxWalk && radius > monteCarloParams.eps) {  
+        it++;
+        float th = frand() * 2 *  M_PI;
+        x_o = vec4(x_o.x + radius * cos(th), x_o.y + radius * sin(th), x_o.zw);
+        closestPoint = closestPointBVH(x_o);
+        radius = length(x_o - closestPoint.pos);
+    }
+
+    if(it == monteCarloParams.maxWalk) return vec4(0.,0.,0.,1.);
+    return closestPoint.col;   
+}
 
 void main(){
-	
+    int pass = opts.pass;
+	srand(ivec2(gl_GlobalInvocationID.xy), int(pass));
+
+    vec4 sum = vec4(0.0, 0.0, 0.0, 0.0);
+    vec4 realCoord;
+    for(int i = 0; i < monteCarloParams.sampleN; ++i){
+        realCoord = vec4(gl_GlobalInvocationID, 1.0);
+        //if(frand() > 0.49f) realCoord.x += 1;
+        sum += MonteCarloEstim(realCoord);
+    }
+    
+
+    sum += imageLoad(imgOut, ivec2(gl_GlobalInvocationID.xy));
+    imageStore(imgOut, ivec2(gl_GlobalInvocationID.xy), sum);
 }

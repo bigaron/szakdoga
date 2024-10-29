@@ -11,18 +11,28 @@
 #include "../helperFunctions/helperFunctions.hpp"
 #include "../shader.hpp"
 #include "MonteCarloParams.hpp"
+#include "hostBVH.hpp"
+#include "BVH.hpp"
 
 class MonteCarlo {
-	std::vector<VertexAttrib> boundingPoints;
+	std::vector<VertexAttrib> boundingPoints, textureCorners;
 	Shader monteCarloShader;
 	std::string pathPref;
+	
 	MonteCarloParameters params;
+	AlgorithmOpts opts;
 
-	int screenHeight, screenWidth;
+	int screenHeight = 0, screenWidth = 0;
 
-	GLuint vao;
-	GLuint boundarySSBO, paramSSBO;
-	GLuint windowUBO;
+	GLuint vao = 0u;
+	GLuint boundarySSBO = 0u, paramSSBO = 0u, bvhSSBO = 0u, indexSSBO = 0u, algoSSBO = 0u, textureCornerSSBO = 0u;
+	GLuint windowUBO = 0u;
+	GLuint textureLoc = 0u, monteCarloTexture = 0u;
+	GLuint vbo = 0u;
+
+	BVH bvh ;
+	std::vector<hostPointIndex> indices;
+	std::vector<hostBVH> bvhToGPU;
 public:
 	MonteCarlo(std::string pathPref=""):pathPref(pathPref) {
 		boundingPoints = std::vector<VertexAttrib>();
@@ -35,6 +45,8 @@ public:
 	void printBoundaryPoints();
 	void setPathPrefix(std::string path);
 	void draw();
+
+	void generateBVH();
 
 	void setParams(const MonteCarloParameters& params);
 	void setupMonteCarlo(const MonteCarloParameters& params, int height = 720, int width = 1280);

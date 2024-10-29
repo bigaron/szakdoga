@@ -81,6 +81,14 @@ public:
         glDeleteShader(vertex);
         glDeleteShader(fragment);
     }
+
+    unsigned int getUniformLocation(const char* name, const unsigned int ID) const {
+        unsigned int location = glGetUniformLocation(ID, name);
+        if (location == -1) {
+            std::cerr << "ERROR: Unable to find " << name << " named uniform" << std::endl;
+        }
+        return location;
+    }
 private:
     void checkCompileErrors(unsigned int shader, const std::string& type) const {
         int success;

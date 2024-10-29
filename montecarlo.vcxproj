@@ -134,13 +134,17 @@
     <ClCompile Include="src\graphics\application.cpp" />
     <ClCompile Include="src\helperFunctions\helperFunctions.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\monteCarlo\BVH.cpp" />
     <ClCompile Include="src\monteCarlo\monteCarlo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\graphics\application.hpp" />
     <ClInclude Include="src\helperFunctions\helperFunctions.hpp" />
+    <ClInclude Include="src\monteCarlo\BVH.hpp" />
+    <ClInclude Include="src\monteCarlo\hostBVH.hpp" />
     <ClInclude Include="src\monteCarlo\monteCarlo.hpp" />
     <ClInclude Include="src\monteCarlo\MonteCarloParams.hpp" />
+    <ClInclude Include="src\monteCarlo\Node.hpp" />
     <ClInclude Include="src\monteCarlo\vertexAttrib.hpp" />
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>
