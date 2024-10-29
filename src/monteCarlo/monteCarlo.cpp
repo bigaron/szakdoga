@@ -1,5 +1,10 @@
 #include "monteCarlo.hpp"
 
+void MonteCarlo::setupShaders() {
+	monteCarloShader.GraphicsShader(std::string(pathPref).append("shaders/monteCarlo.vert").c_str(), std::string(pathPref).append("shaders/monteCarlo.frag").c_str());
+	monteCarloShader.ComputeShader(std::string(pathPref).append("shaders/monteCarlo.comp").c_str());
+}
+
 void MonteCarlo::readInputFromFile(const char* filePath) {
 	std::ifstream file(filePath);
 	if (!file.is_open()) {
@@ -79,4 +84,45 @@ void MonteCarlo::printBoundaryPoints() {
 	for (const VertexAttrib& bound : this->boundingPoints) {
 		std::cout << bound.pos.x << " " << bound.pos.y << " " << bound.pos.z << " " << bound.pos.w << " || " << bound.col.r << " " << bound.col.g << " " << bound.col.b << " " << bound.col.a << std::endl;
 	}
+}
+
+void MonteCarlo::setPathPrefix(std::string pathPref){
+	this->pathPref = pathPref;
+}
+
+void MonteCarlo::draw() {
+
+
+
+}
+
+void MonteCarlo::setParams(const MonteCarloParameters& params) {
+	this->params = params;
+}
+
+void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height=720, int width=1280){
+	this->setParams(params);
+	this->setScreenDim(height, width);
+	glGenVertexArrays(1, &this->vao);
+	glBindVertexArray(this->vao);
+
+	glCreateBuffers(1, &this->boundarySSBO);
+	glCreateBuffers(1, &this->paramSSBO);
+	glCreateBuffers(1, &this->windowUBO);
+
+	glm::vec4 resVec(this->screenWidth, this->screenHeight, 0., 0.);
+	glNamedBufferStorage(this->windowUBO, sizeof(glm::vec4), static_cast<const void*>(& resVec), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->windowUBO);
+
+	glNamedBufferStorage(this->boundarySSBO, sizeof(VertexAttrib) * this->boundingPoints.size(), 
+		static_cast<const void*>(this->boundingPoints.data()), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this->boundarySSBO);
+
+	glNamedBufferStorage(this->paramSSBO, sizeof(MonteCarloParameters), static_cast<const void*>(&this->params), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this->paramSSBO);
+}
+
+void MonteCarlo::setScreenDim(int height, int width) {
+	this->screenHeight = height;
+	this->screenWidth = width;
 }

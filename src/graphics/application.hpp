@@ -15,14 +15,14 @@ class Application {
 	GLint windowWidth, windowHeight;
 	std::string title;
 	GLFWwindow* window;
-	void createContext();
 	MonteCarlo monteCarlo;
+	bool initiated;
 public:
-	Application(GLint width, GLint height, const char* title = "") : windowWidth(width), windowHeight(height), title(title), window(nullptr) {
-		createContext();
-		monteCarlo = MonteCarlo();
+	Application(GLint width, GLint height, const char* title = "") : windowWidth(width), windowHeight(height), title(title), window(nullptr), initiated(false) {
+		monteCarlo.setPathPrefix("src/monteCarlo/");
 	}
 
+	void createContext();
 	void mainLoop();
 
 	~Application() {

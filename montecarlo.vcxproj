@@ -140,6 +140,7 @@
     <ClInclude Include="src\graphics\application.hpp" />
     <ClInclude Include="src\helperFunctions\helperFunctions.hpp" />
     <ClInclude Include="src\monteCarlo\monteCarlo.hpp" />
+    <ClInclude Include="src\monteCarlo\MonteCarloParams.hpp" />
     <ClInclude Include="src\monteCarlo\vertexAttrib.hpp" />
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>

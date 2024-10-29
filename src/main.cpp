@@ -16,6 +16,7 @@ extern "C" {
 int main() {
 
 	Application application(static_cast<GLint>(1280), static_cast<GLint>(720), "test");
+	application.createContext();
 	application.mainLoop();
 
 	return 0;

@@ -44,6 +44,9 @@
     <ClInclude Include="src\helperFunctions\helperFunctions.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\monteCarlo\MonteCarloParams.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\monteCarlo\shaders\monteCarlo.vert" />
