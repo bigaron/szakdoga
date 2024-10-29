@@ -76,4 +76,6 @@ void Application::generateBezierToFile(std::string fileSrc, const std::vector<gl
 		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
 		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w;
 	}
+
+	file.close();
 }
