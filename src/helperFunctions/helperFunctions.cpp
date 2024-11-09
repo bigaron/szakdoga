@@ -18,7 +18,7 @@ std::vector<std::string> HelperFunctions::split(const std::string& line, const s
 	return values;
 }
 
-static std::vector<glm::vec4> calculateBezierCurve(const std::vector<glm::vec4>& controlPoints, float timeStep) {
+std::vector<glm::vec4> HelperFunctions::calculateBezierCurve(const std::vector<glm::vec4>& controlPoints, float timeStep) {
 	std::vector<glm::vec4> points;
 
 	for (auto t = 0.0f; t < 1.0f; t += timeStep) {

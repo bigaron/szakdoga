@@ -3,7 +3,7 @@
 
 struct MonteCarloParameters {
 	int vertexN;
-	int eps;
+	float eps;
 	int sampleN;
 	int maxWalk;
 };

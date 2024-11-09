@@ -28,7 +28,7 @@ struct deviceBVHElem{
 
 struct MonteCarloParams{
 	int vertexN;
-	int eps;
+	float eps;
 	int sampleN;
 	int maxWalk;
 };

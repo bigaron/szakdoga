@@ -38,9 +38,11 @@ public:
 		boundingPoints = std::vector<VertexAttrib>();
 		monteCarloShader = Shader();
 		params = MonteCarloParameters();
+		opts = AlgorithmOpts();
 	}
 
 	void setupShaders();
+	void cpySSBOStoGPU();
 	void readInputFromFile(const char* filePath);
 	void printBoundaryPoints();
 	void setPathPrefix(std::string path);

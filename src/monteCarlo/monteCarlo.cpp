@@ -78,6 +78,8 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 		this->boundingPoints.emplace_back(pos, col);
 		lineNum++;
 	}
+
+	this->params.vertexN = this->boundingPoints.size();
 }
 
 void MonteCarlo::printBoundaryPoints() {
@@ -116,7 +118,23 @@ void MonteCarlo::setParams(const MonteCarloParameters& params) {
 	this->params = params;
 }
 
-void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height=720, int width=1280){
+void MonteCarlo::cpySSBOStoGPU() {
+	glNamedBufferStorage(this->boundarySSBO, sizeof(VertexAttrib) * this->boundingPoints.size(),
+		static_cast<const void*>(this->boundingPoints.data()), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this->boundarySSBO);
+
+	glNamedBufferStorage(this->paramSSBO, sizeof(MonteCarloParameters), static_cast<const void*>(&this->params), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this->paramSSBO);
+
+	glNamedBufferStorage(this->bvhSSBO, sizeof(hostBVH) * this->bvhToGPU.size(), static_cast<const void*>(this->bvhToGPU.data()), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, this->bvhSSBO);
+
+	glNamedBufferStorage(this->indexSSBO, sizeof(hostPointIndex) * this->indices.size(), static_cast<const void*>(this->indices.data()), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, this->indexSSBO);
+}
+
+void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height, int width){
+	this->setupShaders();
 	this->setParams(params);
 	this->setScreenDim(height, width);
 	this->textureCorners.emplace_back(glm::vec4(this->screenWidth, 0, 0, 1), glm::vec4(0, 0, 0, 1));
@@ -139,25 +157,9 @@ void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height=
 	glNamedBufferStorage(this->windowUBO, sizeof(glm::vec4), static_cast<const void*>(& resVec), GL_DYNAMIC_STORAGE_BIT);
 	glBindBufferBase(GL_UNIFORM_BUFFER, 0, this->windowUBO);
 
-	glNamedBufferStorage(this->boundarySSBO, sizeof(VertexAttrib) * this->boundingPoints.size(), 
-		static_cast<const void*>(this->boundingPoints.data()), GL_DYNAMIC_STORAGE_BIT);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, this->boundarySSBO);
-
-	glNamedBufferStorage(this->paramSSBO, sizeof(MonteCarloParameters), static_cast<const void*>(&this->params), GL_DYNAMIC_STORAGE_BIT);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this->paramSSBO);
-
-	glNamedBufferStorage(this->bvhSSBO, sizeof(hostBVH) * this->bvhToGPU.size(), static_cast<const void*>(this->bvhToGPU.data()), GL_DYNAMIC_STORAGE_BIT);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, this->bvhSSBO);
-
-	glNamedBufferStorage(this->indexSSBO, sizeof(hostPointIndex) * this->indices.size(), static_cast<const void*>(this->indices.data()), GL_DYNAMIC_STORAGE_BIT);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, this->indexSSBO);
-
 	glNamedBufferStorage(this->textureCornerSSBO, sizeof(VertexAttrib) * this->textureCorners.size(), static_cast<const void*>(this->textureCorners.data()), GL_DYNAMIC_STORAGE_BIT);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, this->textureCornerSSBO);
 
-
-	GLuint texLoc = this->monteCarloShader.getUniformLocation("tex", this->monteCarloShader.graphicsID);
-	glUniform1i(texLoc, 0);
 	float tex[] = {
 		1.0, 0.0,
 		1.0, 1.0,

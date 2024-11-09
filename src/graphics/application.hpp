@@ -21,6 +21,8 @@ class Application {
 public:
 	Application(GLint width, GLint height, const char* title = "") : windowWidth(width), windowHeight(height), title(title), window(nullptr), initiated(false) {
 		monteCarlo.setPathPrefix("src/monteCarlo/");
+		createContext();
+		monteCarlo.setupMonteCarlo({ -1, 1.0f, 3, 20}, 720, 1280);
 	}
 
 	void createContext();
@@ -29,9 +31,8 @@ public:
 	void generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4> contP, float gran);
 
 	~Application() {
-		glfwDestroyWindow(window);
+		glfwDestroyWindow(this->window);
 		glfwTerminate();
-		std::cout << "Destructor called" << std::endl;
 	}
 };
 #endif // !APPLICATION_HPP

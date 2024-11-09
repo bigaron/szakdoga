@@ -41,19 +41,20 @@ void Application::mainLoop(){
 	}
 
 	try {
-		monteCarlo.readInputFromFile("input/input.txt");
+		this->generateBezierToFile("input/generated.txt", { glm::vec4(120, 300, 0, 1), glm::vec4(250, 290, 0, 1), glm::vec4(700, 360, 0, 1), glm::vec4(600, 600, 0, 1)}, 0.005f);
+		monteCarlo.readInputFromFile("input/generated.txt");
+		monteCarlo.generateBVH();
 	}
 	catch (const std::invalid_argument& ex) {
 		std::cerr << ex.what() << std::endl << "Returning..." << std::endl;
 	}
 
-	monteCarlo.setupShaders();
-	monteCarlo.printBoundaryPoints();
+	monteCarlo.cpySSBOStoGPU();
 	while (!glfwWindowShouldClose(this->window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+		monteCarlo.draw();
 
 		glfwPollEvents();
 		glfwSwapBuffers(this->window);
@@ -74,7 +75,8 @@ void Application::generateBezierToFile(std::string fileSrc, const std::vector<gl
 		if (it == 30ull) it = 0ull;
 		glm::vec4 col = it < 10ull ? red : it < 20ull ? blue : green;
 		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
-		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w;
+		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w << std::endl;
+		it++;
 	}
 
 	file.close();

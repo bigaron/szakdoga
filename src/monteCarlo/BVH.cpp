@@ -120,7 +120,7 @@ std::vector<hostBVH> BVH::hostBVHToDeviceBVH() {
 std::vector<hostPointIndex> BVH::hostIndicesToDevice() {
 	std::vector<hostPointIndex> indices(nodeCount);
 
-	for (int i = 0; i < nodeCount; ++i) {
+	for (unsigned int i = 0; i < nodeCount; ++i) {
 		hostPointIndex tmp;
 		tmp.pointIndex = pointIndex[i];
 		indices[i] = tmp;
