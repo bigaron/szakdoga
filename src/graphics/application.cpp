@@ -41,8 +41,31 @@ void Application::mainLoop(){
 	}
 
 	try {
-		this->generateBezierToFile("input/generated.txt", { glm::vec4(120, 300, 0, 1), glm::vec4(250, 290, 0, 1), glm::vec4(700, 360, 0, 1), glm::vec4(600, 600, 0, 1)}, 0.005f);
-		monteCarlo.readInputFromFile("input/generated.txt");
+		/*monteCarlo.readInputFromFile("input/generated.txt");
+		monteCarlo.readInputFromFile("input/generated2.txt");*/
+
+		//monteCarlo.readInputFromFile("input/line.txt");
+		//monteCarlo.readInputFromFile("input/line2.txt");
+		//monteCarlo.readInputFromFile("input/line3.txt");
+
+		//generateLineToFile("input/triangle1.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 0, 0, 1));
+		//generateLineToFile("input/triangle2.txt", glm::vec4(300, 151, 0, 1), glm::vec4(375, 255, 0, 1), 0.005f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/triangle3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(0, 0, 1, 1));
+
+		//generateLineToFile("input/triangleAndPoint4.txt", glm::vec4(600, 600, 0, 1), glm::vec4(600, 600, 0, 1), 0.5f, glm::vec4(0, 0, 0, 1));
+		//generateLineToFile("input/triangleAndPoint.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));
+		//generateLineToFile("input/triangleAndPoint2.txt", glm::vec4(300, 151, 0, 1), glm::vec4(375, 255, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));
+		//generateLineToFile("input/triangleAndPoint3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));
+
+		//monteCarlo.readInputFromFile("input/triangle1.txt");
+		//monteCarlo.readInputFromFile("input/triangle2.txt");
+		//monteCarlo.readInputFromFile("input/triangle3.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint2.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint3.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint4.txt");
+
+
 		monteCarlo.generateBVH();
 	}
 	catch (const std::invalid_argument& ex) {
@@ -62,7 +85,7 @@ void Application::mainLoop(){
 }
 
 
-void Application::generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4> contP, float gran) {
+void Application::generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4>& contP, float gran) {
 	std::vector<glm::vec4> points = HelperFunctions::calculateBezierCurve(contP, gran);
 
 	std::ofstream file(fileSrc);
@@ -73,7 +96,23 @@ void Application::generateBezierToFile(std::string fileSrc, const std::vector<gl
 
 	for (const glm::vec4& point : points) {
 		if (it == 30ull) it = 0ull;
-		glm::vec4 col = it < 10ull ? red : it < 20ull ? blue : green;
+		glm::vec4 col = it < 5ull ? red : it < 20ull ? blue : green;
+		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
+		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w << std::endl;
+		it++;
+	}
+
+	file.close();
+}
+
+void Application::generateLineToFile(std::string fileSrc, const glm::vec4& startP, const glm::vec4& endP, float gran, const glm::vec4& col) {
+	std::vector<glm::vec4> points = HelperFunctions::calculateLine(startP, endP, gran);
+
+	std::ofstream file(fileSrc);
+	file << 4 << " " << 4 << std::endl << std::endl;
+	size_t it = 0ull;
+
+	for (const glm::vec4& point : points) {
 		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
 		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w << std::endl;
 		it++;

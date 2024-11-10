@@ -7,6 +7,7 @@
 #include "hostBVH.hpp"
 #include "Node.hpp"
 #include <cmath>
+#include <iostream>
 
 
 class BVH {

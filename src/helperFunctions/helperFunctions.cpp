@@ -30,3 +30,14 @@ std::vector<glm::vec4> HelperFunctions::calculateBezierCurve(const std::vector<g
 
 	return points;
 }
+
+std::vector<glm::vec4> HelperFunctions::calculateLine(const glm::vec4& startP, const glm::vec4& endP, float gran) {
+	std::vector<glm::vec4> points;
+
+	for (float t = 0.0f; t < 1.0f; t += gran) {
+		float oneMinT = 1.0f - t;
+		points.push_back((1.0f - t) * startP + t * endP);
+	}
+
+	return points;
+}

@@ -14,7 +14,9 @@ void BVH::updateNodeBB(const unsigned int& nodeIndex) {
 
 void BVH::subdivide(const unsigned int& nodeIndex) {
 	Node& currentNode = nodes[nodeIndex];
-	if (currentNode.itemCount <= ITEMLIMIT) return;
+	if (currentNode.itemCount <= 2) {
+		return;
+	}
 	glm::vec3 dist = currentNode.bb.upperBound - currentNode.bb.lowerBound;
 	int axis = 0;
 	if (dist.y > dist.x) axis = 1;
@@ -49,10 +51,12 @@ void BVH::subdivide(const unsigned int& nodeIndex) {
 void BVH::generateBVH() {
 	nodes.clear();
 	nodes.resize(nodeCount);
+	pointIndex.resize(points.size());
 
 	for (unsigned int i = 0u; i < nodeCount; ++i) {
-		pointIndex[i] = nodeIndex[i] = i;
+		nodeIndex[i] = i;
 	}
+	for (unsigned int i = 0u; i < points.size(); ++i) pointIndex[i] = i;
 
 	Node& root = nodes[rootIndex];
 	root.leftChild = root.rightChild = 0u;
@@ -65,8 +69,7 @@ void BVH::generateBVH() {
 
 void BVH::generateBVH(std::vector<VertexAttrib>& points) {
 	this->points = points;
-	nodeCount = static_cast<unsigned int>(2 * points.size() - 1);
-	pointIndex.resize(nodeCount);
+	nodeCount = static_cast<unsigned int>(2 * points.size());
 	nodeIndex.resize(nodeCount);
 	generateBVH();
 }
@@ -109,7 +112,7 @@ std::vector<hostBVH> BVH::hostBVHToDeviceBVH() {
 	hostBVH tmp;
 	for (size_t i = 0; i < nodeCount; ++i) {
 		const Node& node = nodes[i];
-		tmp.pointIndex = static_cast<int>(pointIndex[i]);
+		//tmp.pointIndex = static_cast<int>(pointIndex[i]);
 		tmp.node = node;
 		ret[i] = tmp;
 	}
@@ -118,9 +121,9 @@ std::vector<hostBVH> BVH::hostBVHToDeviceBVH() {
 }
 
 std::vector<hostPointIndex> BVH::hostIndicesToDevice() {
-	std::vector<hostPointIndex> indices(nodeCount);
+	std::vector<hostPointIndex> indices(points.size());
 
-	for (unsigned int i = 0; i < nodeCount; ++i) {
+	for (unsigned int i = 0; i < points.size(); ++i) {
 		hostPointIndex tmp;
 		tmp.pointIndex = pointIndex[i];
 		indices[i] = tmp;

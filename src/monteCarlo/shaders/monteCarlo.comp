@@ -124,40 +124,7 @@ deviceVertexData closestPointBVH(vec4 x_o){
     deviceBVHElem leftChild, rightChild;
     bool outside = false;
 
-    if(!isPointInBVH(x_o, root.node)) return closestPointOutsideBVH(x_o);
-    bool inLeft = false, inRight = false;
-
-    while(root.node.itemCount == 0){
-        inLeft = false;
-        inRight = false;
-        leftChild = bvhElems[root.node.leftChild];
-        rightChild = bvhElems[root.node.rightChild];
-        if(isPointInBVH(x_o, leftChild.node)) inLeft = true;
-        if(isPointInBVH(x_o, rightChild.node)) inRight = true;
-        
-        if(inLeft && inRight){
-            float val = frand();
-            if(val > 0.49) root = leftChild;
-            else root = rightChild;
-        } else if(inLeft) {
-            root = leftChild;
-        } else if(inRight) {
-            root = rightChild;
-        } else return closestPointOutsideBVH(x_o);
-    }
-
-    float closest = inf;
-    deviceVertexData point = boundingPoints[0];
-
-    for(int i = root.node.itemStart; i < root.node.itemStart + root.node.itemCount; ++i){
-        float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
-        if(closest > dist){
-            closest = dist;
-            point = boundingPoints[pointIndex[i].pos];
-        }
-    }
-
-    return point;
+    return closestPointOutsideBVH(x_o);
 }
 
 vec4 MonteCarloEstim(vec4 x_o){
@@ -166,7 +133,7 @@ vec4 MonteCarloEstim(vec4 x_o){
     float radius = length(x_o - closestPoint.pos);
     while(it < monteCarloParams.maxWalk && radius > monteCarloParams.eps) {  
         it++;
-        float th = frand() * 2 *  M_PI;
+        float th = frand() * 2 * M_PI;
         x_o = vec4(x_o.x + radius * cos(th), x_o.y + radius * sin(th), x_o.zw);
         closestPoint = closestPointBVH(x_o);
         radius = length(x_o - closestPoint.pos);
@@ -182,12 +149,17 @@ void main(){
 
     vec4 sum = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 realCoord;
+    int si = 1;
     for(int i = 0; i < monteCarloParams.sampleN; ++i){
         realCoord = vec4(gl_GlobalInvocationID, 1.0);
-        //if(frand() > 0.49f) realCoord.x += 1;
+        if(frand()>0.49f) si = -1;
+        else si = 1;
+        realCoord.x = realCoord.x + si * round(3 * frand());
+        if(frand()>0.49f) si = -1;
+        else si = 1;
+        realCoord.y = realCoord.y + si * round(3 * frand());
         sum += MonteCarloEstim(realCoord);
     }
-    
 
     sum += imageLoad(imgOut, ivec2(gl_GlobalInvocationID.xy));
     imageStore(imgOut, ivec2(gl_GlobalInvocationID.xy), sum);

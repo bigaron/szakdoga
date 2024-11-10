@@ -98,6 +98,7 @@ void MonteCarlo::draw() {
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 	
 	this->opts.pass++;
+	std::cout << this->opts.pass << " ";
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(AlgorithmOpts), nullptr, GL_DYNAMIC_DRAW);
 	glCreateBuffers(1, &this->algoSSBO);
 	glNamedBufferStorage(this->algoSSBO, sizeof(AlgorithmOpts), static_cast<const void*>(&this->opts), GL_DYNAMIC_STORAGE_BIT);
@@ -112,6 +113,19 @@ void MonteCarlo::generateBVH() {
 	this->bvh = BVH(this->boundingPoints);
 	this->bvhToGPU = this->bvh.hostBVHToDeviceBVH();
 	this->indices = this->bvh.hostIndicesToDevice();
+	
+	unsigned int count = 0u;
+	for (const Node& node : this->bvh.nodes) {
+		std::cout << "{(" << node.bb.lowerBound.x << "," << node.bb.lowerBound.y << "),(" << node.bb.upperBound.x << "," << node.bb.upperBound.y << ")} - ";
+		if (node.itemCount != 0) {
+			std::cout << node.itemCount << " ----- ";
+			count += node.itemCount;
+			for(unsigned int i = 0u; i < node.itemCount; ++i)
+				std::cout << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.x << "," << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.y << "\t";
+		}
+		std::cout << std::endl;
+	}
+	std::cout << "HA";
 }
 
 void MonteCarlo::setParams(const MonteCarloParameters& params) {
