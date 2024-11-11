@@ -1,5 +1,20 @@
 #include "application.hpp"
 
+//Not good global variable solution
+mouseButtonPosCallBack btnCallBack;
+
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		double x, y;
+		glfwGetCursorPos(window, &x, &y);
+		btnCallBack.xCoord = x;
+		btnCallBack.yCoord  = y;
+		btnCallBack.coordsRead = false;
+		std::cout << "(" << x << "," << y << ")" << std::endl;
+	}
+}
+
+
 void Application::createContext(){
 	if (!glfwInit()) {
 		std::cerr << "GLFW could not be initiated!" << std::endl;
@@ -30,6 +45,8 @@ void Application::createContext(){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	initiated = true;
+
+	glfwSetMouseButtonCallback(this->window, mouseButtonCallback);
 }
 
 
@@ -70,6 +87,10 @@ void Application::mainLoop(){
 	}
 	catch (const std::invalid_argument& ex) {
 		std::cerr << ex.what() << std::endl << "Returning..." << std::endl;
+	}
+
+	if (!btnCallBack.coordsRead) {
+		std::cout << btnCallBack.xCoord << "," << btnCallBack.yCoord << "\t";
 	}
 
 	monteCarlo.cpySSBOStoGPU();

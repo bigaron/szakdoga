@@ -141,6 +141,7 @@
     <ClInclude Include="src\graphics\application.hpp" />
     <ClInclude Include="src\helperFunctions\helperFunctions.hpp" />
     <ClInclude Include="src\monteCarlo\BVH.hpp" />
+    <ClInclude Include="src\monteCarlo\GLFWCallBackHelper.hpp" />
     <ClInclude Include="src\monteCarlo\hostBVH.hpp" />
     <ClInclude Include="src\monteCarlo\monteCarlo.hpp" />
     <ClInclude Include="src\monteCarlo\MonteCarloParams.hpp" />

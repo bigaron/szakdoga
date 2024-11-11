@@ -11,6 +11,7 @@
 
 #include "../monteCarlo/monteCarlo.hpp"
 #include "../helperFunctions/helperFunctions.hpp"
+#include "../monteCarlo/GLFWCallBackHelper.hpp"
 
 class Application {
 	GLint windowWidth, windowHeight;
@@ -18,8 +19,10 @@ class Application {
 	GLFWwindow* window;
 	MonteCarlo monteCarlo;
 	bool initiated;
+	double xCoord, yCoord;
 public:
 	Application(GLint width, GLint height, const char* title = "") : windowWidth(width), windowHeight(height), title(title), window(nullptr), initiated(false) {
+		xCoord = yCoord = -1.0;
 		monteCarlo.setPathPrefix("src/monteCarlo/");
 		createContext();
 		monteCarlo.setupMonteCarlo({ -1, 1.f, 6, 40}, height, width);
