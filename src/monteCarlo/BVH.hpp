@@ -34,6 +34,7 @@ public:
 	void generateBVH(std::vector<VertexAttrib>& points);
 
 	std::vector<glm::vec4> boundingBoxes();
+	std::vector<glm::vec4> distanceBetweenChildren();
 
 	unsigned int distinctValues(const std::vector<glm::vec4>& points);
 	std::vector<hostBVH> hostBVHToDeviceBVH();

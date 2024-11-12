@@ -35,6 +35,7 @@ class MonteCarlo {
 	std::vector<hostBVH> bvhToGPU;
 	std::vector<glm::vec4> pixels;
 	bool isDebugMode = false;
+	void printDistanceBetweenChildren(const Node& root);
 public:
 	MonteCarlo(std::string pathPref=""):pathPref(pathPref) {
 		boundingPoints = std::vector<VertexAttrib>();

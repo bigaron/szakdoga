@@ -103,6 +103,7 @@ void MonteCarlo::drawBVH(){
 	for (VertexAttrib& v : boundingPoints) {
 		points.push_back(v.pos);
 	}
+
 		
 
 	glUseProgram(this->bvhDebugBoundingsShader.graphicsID);
@@ -113,13 +114,22 @@ void MonteCarlo::drawBVH(){
 	glDrawArrays(GL_POINTS, 0, points.size());
 
 	glUseProgram(this->bvhDebugShader.graphicsID);
+
+	unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
+	glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
 	glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
 	std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes();
 	glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-
 	glDrawArrays(GL_LINES, 0, boundingVerts.size());
+
+	std::vector<glm::vec4> dists = bvh.distanceBetweenChildren();
+	glUniform4f(loc, 1.0f, 0.0f, 1.0f, 1.0f);
+	glBufferData(GL_ARRAY_BUFFER, dists.size() * sizeof(glm::vec4), static_cast<const void*>(dists.data()), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	glDrawArrays(GL_LINES, 0, dists.size());
 }
 
 void MonteCarlo::draw() {
@@ -161,11 +171,21 @@ void MonteCarlo::getValueAtMouse(int x, int y) {
 	std::cout << "(" << seeked[0] / seeked[3] << "," << seeked[1] / seeked[3] << "," << seeked[2] / seeked[3] << "," << seeked[3] << ")" << std::endl;
 }
 
+
+void MonteCarlo::printDistanceBetweenChildren(const Node& root) {
+	if (root.itemCount != 0) return;
+	Node& leftChild = bvh.nodes[root.leftChild];
+	Node& rightChild = bvh.nodes[root.rightChild];
+	std::cout << glm::length((leftChild.bb.lowerBound + leftChild.bb.upperBound) / 2.0f - (rightChild.bb.lowerBound + rightChild.bb.upperBound) / 2.0f) << std::endl;
+	printDistanceBetweenChildren(leftChild);
+	printDistanceBetweenChildren(rightChild);
+}
+
 void MonteCarlo::generateBVH() {
 	this->bvh = BVH(this->boundingPoints);
 	this->bvhToGPU = this->bvh.hostBVHToDeviceBVH();
 	this->indices = this->bvh.hostIndicesToDevice();
-	
+
 	unsigned int count = 0u;
 	unsigned int onlyOneChild = 0u;
 	for (const Node& node : this->bvh.nodes) {

@@ -93,7 +93,7 @@ void Application::mainLoop(){
 		std::cout << "HERE";
 		monteCarlo.getValueAtMouse(static_cast<int>(btnCallBack.xCoord), static_cast<int>(btnCallBack.yCoord));
 	}
-	monteCarlo.setDebugMode(false);
+	monteCarlo.setDebugMode(true);
 	monteCarlo.cpySSBOStoGPU();
 	while (!glfwWindowShouldClose(this->window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);

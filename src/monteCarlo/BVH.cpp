@@ -94,6 +94,20 @@ std::vector<glm::vec4> BVH::boundingBoxes() {
 	return boxCoords;
 }
 
+std::vector<glm::vec4> BVH::distanceBetweenChildren() {
+	std::vector<glm::vec4> dist = std::vector<glm::vec4>();
+	for (const Node& node : nodes) {
+		if (node.itemCount != 0 || node.bb.lowerBound.x < 0.0f) continue;
+		Node& leftChild = nodes[node.leftChild];
+		Node& rightChild = nodes[node.rightChild];
+		dist.push_back((leftChild.bb.lowerBound + leftChild.bb.upperBound) / 2.0f);
+		dist.push_back((rightChild.bb.lowerBound + rightChild.bb.upperBound) / 2.0f);
+	}
+
+	return dist;
+}
+
+
 unsigned int BVH::distinctValues(const std::vector<glm::vec4>& points) {
 	std::vector<glm::vec4> used;
 
