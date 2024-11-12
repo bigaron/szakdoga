@@ -150,6 +150,10 @@
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\monteCarlo\shaders\boundingPoints.frag" />
+    <None Include="src\monteCarlo\shaders\boundingPoints.vert" />
+    <None Include="src\monteCarlo\shaders\bvhDebug.frag" />
+    <None Include="src\monteCarlo\shaders\bvhDebug.vert" />
     <None Include="src\monteCarlo\shaders\monteCarlo.comp" />
     <None Include="src\monteCarlo\shaders\monteCarlo.frag" />
     <None Include="src\monteCarlo\shaders\monteCarlo.vert" />

@@ -3,7 +3,7 @@
 
 struct mouseButtonPosCallBack {
 	double xCoord, yCoord;
-	bool coordsRead;
+	bool coordsRead = true;
 };
 
 #endif // !MONTECARLO_GLFWCALLBACKHELPER_HPP

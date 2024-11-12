@@ -16,7 +16,7 @@
 
 class MonteCarlo {
 	std::vector<VertexAttrib> boundingPoints, textureCorners;
-	Shader monteCarloShader;
+	Shader monteCarloShader, bvhDebugShader, bvhDebugBoundingsShader;
 	std::string pathPref;
 	
 	MonteCarloParameters params;
@@ -33,10 +33,14 @@ class MonteCarlo {
 	BVH bvh ;
 	std::vector<hostPointIndex> indices;
 	std::vector<hostBVH> bvhToGPU;
+	std::vector<glm::vec4> pixels;
+	bool isDebugMode = false;
 public:
 	MonteCarlo(std::string pathPref=""):pathPref(pathPref) {
 		boundingPoints = std::vector<VertexAttrib>();
 		monteCarloShader = Shader();
+		bvhDebugShader = Shader();
+		bvhDebugBoundingsShader = Shader();
 		params = MonteCarloParameters();
 		opts = AlgorithmOpts();
 	}
@@ -47,6 +51,10 @@ public:
 	void printBoundaryPoints();
 	void setPathPrefix(std::string path);
 	void draw();
+
+	void drawBVH();
+	void setDebugMode(bool flag) { isDebugMode = flag; }
+	void getValueAtMouse(int x, int y);
 
 	void generateBVH();
 

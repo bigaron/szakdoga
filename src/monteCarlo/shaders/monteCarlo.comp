@@ -92,12 +92,23 @@ deviceVertexData closestPointOutsideBVH(vec4 x_o){
     deviceBVHElem  leftChild, rightChild;
     bool done = false;
 
+    float lenLeft, lenRight;
+
     while(!done){
         leftChild = bvhElems[root.node.leftChild];
         rightChild = bvhElems[root.node.rightChild];
-        float lenLeft = distFromBVH(x_o, leftChild), lenRight = distFromBVH(x_o, rightChild);
-        if(lenLeft < lenRight) root = leftChild;
-        else root = rightChild;
+        
+        if(root.node.leftChild == 0){
+           root = rightChild;
+        }else if(root.node.rightChild == 0){
+            root = leftChild;
+        }else {
+            lenLeft = distFromBVH(x_o, leftChild);
+            lenRight = distFromBVH(x_o, rightChild);
+            if(lenLeft < lenRight) root = leftChild;
+            else root = rightChild;    
+        }
+        
         if(root.node.itemCount > 0) done = true;
     }
 
@@ -149,15 +160,8 @@ void main(){
 
     vec4 sum = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 realCoord;
-    int si = 1;
     for(int i = 0; i < monteCarloParams.sampleN; ++i){
         realCoord = vec4(gl_GlobalInvocationID, 1.0);
-        if(frand()>0.49f) si = -1;
-        else si = 1;
-        realCoord.x = realCoord.x + si * round(3 * frand());
-        if(frand()>0.49f) si = -1;
-        else si = 1;
-        realCoord.y = realCoord.y + si * round(3 * frand());
         sum += MonteCarloEstim(realCoord);
     }
 

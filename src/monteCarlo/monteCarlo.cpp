@@ -1,6 +1,8 @@
 #include "monteCarlo.hpp"
 
 void MonteCarlo::setupShaders() {
+	bvhDebugShader.GraphicsShader(std::string(pathPref).append("shaders/bvhDebug.vert").c_str(), std::string(pathPref).append("shaders/bvhDebug.frag").c_str());
+	bvhDebugBoundingsShader.GraphicsShader(std::string(pathPref).append("shaders/boundingPoints.vert").c_str(), std::string(pathPref).append("shaders/boundingPoints.frag").c_str());
 	monteCarloShader.GraphicsShader(std::string(pathPref).append("shaders/monteCarlo.vert").c_str(), std::string(pathPref).append("shaders/monteCarlo.frag").c_str());
 	monteCarloShader.ComputeShader(std::string(pathPref).append("shaders/monteCarlo.comp").c_str());
 }
@@ -92,11 +94,43 @@ void MonteCarlo::setPathPrefix(std::string pathPref){
 	this->pathPref = pathPref;
 }
 
+void MonteCarlo::drawBVH(){
+	GLuint bvhVBO, boundingPointsVBO;
+	glGenBuffers(1, &bvhVBO);
+	glGenBuffers(1, &boundingPointsVBO);
+
+	std::vector<glm::vec4> points = std::vector<glm::vec4>();
+	for (VertexAttrib& v : boundingPoints) {
+		points.push_back(v.pos);
+	}
+		
+
+	glUseProgram(this->bvhDebugBoundingsShader.graphicsID);
+	glBindBuffer(GL_ARRAY_BUFFER, boundingPointsVBO);
+	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), static_cast<const void*>(points.data()), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	glDrawArrays(GL_POINTS, 0, points.size());
+
+	glUseProgram(this->bvhDebugShader.graphicsID);
+	glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
+	std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes();
+	glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+
+	glDrawArrays(GL_LINES, 0, boundingVerts.size());
+}
+
 void MonteCarlo::draw() {
+	if (isDebugMode) {
+		drawBVH();
+		return;
+	}
 	glUseProgram(this->monteCarloShader.computeID);
 	glDispatchCompute(static_cast<GLuint>(this->screenWidth / 32), static_cast<GLuint>(this->screenHeight / 32), static_cast<GLuint>(1u));
 	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
-	
+
 	this->opts.pass++;
 	std::cout << this->opts.pass << " ";
 	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(AlgorithmOpts), nullptr, GL_DYNAMIC_DRAW);
@@ -109,23 +143,47 @@ void MonteCarlo::draw() {
 	glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(this->textureCorners.size()));
 }
 
+void MonteCarlo::getValueAtMouse(int x, int y) {
+	std::vector<float> tmp = std::vector<float>();
+	tmp.resize(static_cast<size_t>(this->screenHeight) * this->screenWidth * 4ull);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_FLOAT, static_cast<void*>(tmp.data()));
+	size_t pixIt = 0ull;
+	for (size_t i = 0ull; i < tmp.size(); i += 4) {
+		pixels[pixIt][0] = tmp[i];
+		pixels[pixIt][1] = tmp[i + 1];
+		pixels[pixIt][2] = tmp[i + 2];
+		pixels[pixIt][3] = tmp[i + 3];
+		pixIt++;
+	}
+
+	glm::vec4& seeked = pixels[x + static_cast<size_t>(y) * this->screenWidth];
+
+	std::cout << "(" << seeked[0] / seeked[3] << "," << seeked[1] / seeked[3] << "," << seeked[2] / seeked[3] << "," << seeked[3] << ")" << std::endl;
+}
+
 void MonteCarlo::generateBVH() {
 	this->bvh = BVH(this->boundingPoints);
 	this->bvhToGPU = this->bvh.hostBVHToDeviceBVH();
 	this->indices = this->bvh.hostIndicesToDevice();
 	
 	unsigned int count = 0u;
+	unsigned int onlyOneChild = 0u;
 	for (const Node& node : this->bvh.nodes) {
 		std::cout << "{(" << node.bb.lowerBound.x << "," << node.bb.lowerBound.y << "),(" << node.bb.upperBound.x << "," << node.bb.upperBound.y << ")} - ";
 		if (node.itemCount != 0) {
 			std::cout << node.itemCount << " ----- ";
 			count += node.itemCount;
-			for(unsigned int i = 0u; i < node.itemCount; ++i)
+			for (unsigned int i = 0u; i < node.itemCount; ++i)
 				std::cout << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.x << "," << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.y << "\t";
+		}
+		else {
+			if ((node.leftChild == 0 || node.rightChild == 0) && node.bb.lowerBound != glm::vec4(-1, -1, 0, 1)) {
+				onlyOneChild++;
+			}
 		}
 		std::cout << std::endl;
 	}
-	std::cout << "HA";
+	std::cout << onlyOneChild << std::endl;
 }
 
 void MonteCarlo::setParams(const MonteCarloParameters& params) {
@@ -200,6 +258,7 @@ void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height,
 	glBindTexture(GL_TEXTURE_2D, this->monteCarloTexture);
 
 	this->opts.pass = 1;
+	this->pixels.resize(static_cast<size_t>(this->screenHeight) * this->screenWidth);
 }
 
 void MonteCarlo::setScreenDim(int height, int width) {
