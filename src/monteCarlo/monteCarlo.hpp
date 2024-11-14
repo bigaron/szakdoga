@@ -59,6 +59,8 @@ public:
 
 	void generateBVH();
 
+	void reset();
+
 	void setParams(const MonteCarloParameters& params);
 	void setupMonteCarlo(const MonteCarloParameters& params, int height = 720, int width = 1280);
 	void setScreenDim(int height, int width);

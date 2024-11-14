@@ -13,6 +13,24 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	}
 }
 
+void Application::configureImGui() {
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplGlfw_NewFrame();
+	ImGui::NewFrame();
+
+	ImGui::Begin("Simulation params");
+
+	if (ImGui::Checkbox("See BVH Outline", &shouldDebug)) {
+		monteCarlo.reset();
+		monteCarlo.setDebugMode(shouldDebug);
+	}
+	ImGui::End();
+
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+
 
 void Application::createContext(){
 	if (!glfwInit()) {
@@ -45,7 +63,16 @@ void Application::createContext(){
 	glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 	initiated = true;
 
-	glfwSetMouseButtonCallback(this->window, mouseButtonCallback);
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
+	ImGui::StyleColorsDark();
+	ImGui_ImplGlfw_InitForOpenGL(this->window, true);
+	ImGui_ImplOpenGL3_Init();
+
+//	glfwSetMouseButtonCallback(this->window, mouseButtonCallback);
 }
 
 
@@ -93,15 +120,21 @@ void Application::mainLoop(){
 		std::cout << "HERE";
 		monteCarlo.getValueAtMouse(static_cast<int>(btnCallBack.xCoord), static_cast<int>(btnCallBack.yCoord));
 	}
-	monteCarlo.setDebugMode(true);
+	monteCarlo.setDebugMode(false);
 	monteCarlo.cpySSBOStoGPU();
 	while (!glfwWindowShouldClose(this->window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		glfwPollEvents();
+		if (glfwGetWindowAttrib(window, GLFW_ICONIFIED) != 0)
+		{
+			ImGui_ImplGlfw_Sleep(10);
+			continue;
+		}
 		monteCarlo.draw();
 
-		glfwPollEvents();
+		configureImGui();
+
 		glfwSwapBuffers(this->window);
 	}
 }
