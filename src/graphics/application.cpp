@@ -24,6 +24,9 @@ void Application::configureImGui() {
 		monteCarlo.reset();
 		monteCarlo.setDebugMode(shouldDebug);
 	}
+	if (ImGui::Checkbox("Pause", &paused)) {
+		monteCarlo.setPaused(paused);
+	}
 	ImGui::End();
 
 	ImGui::Render();
@@ -84,12 +87,12 @@ void Application::mainLoop(){
 	}
 
 	try {
-		monteCarlo.readInputFromFile("input/generated.txt");
-		monteCarlo.readInputFromFile("input/generated2.txt");
+		//monteCarlo.readInputFromFile("input/generated.txt");
+		//monteCarlo.readInputFromFile("input/generated2.txt");
 
-		//monteCarlo.readInputFromFile("input/line.txt");
-		//monteCarlo.readInputFromFile("input/line2.txt");
-		//monteCarlo.readInputFromFile("input/line3.txt");
+		monteCarlo.readInputFromFile("input/line.txt");
+		monteCarlo.readInputFromFile("input/line2.txt");
+		monteCarlo.readInputFromFile("input/line3.txt");
 
 		/*generateLineToFile("input/triangle1.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 0, 0, 1));
 		generateLineToFile("input/triangle2.txt", glm::vec4(300, 151, 0, 1), glm::vec4(375, 255, 0, 1), 0.005f, glm::vec4(0, 1, 0, 1));

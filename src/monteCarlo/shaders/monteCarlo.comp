@@ -4,7 +4,7 @@ layout(rgba32f, binding = 0) uniform image2D imgOut;
 
 #define M_PI 3.1415926535897932384626433832795
 const float inf = 100000000.f;
-
+const float EQUAL_FLOATS_EPS = 0.1f;
 // STRUCTS
 
 struct deviceVertexData{
@@ -82,12 +82,29 @@ void  srand( ivec2 p, int frame ){
 }
 //==============================================================
 
+bool floatEq(float a, float b){
+    return abs(a - b) < EQUAL_FLOATS_EPS;
+}
+
+
 float distFromBVH(vec4 x_o, deviceBVHElem elem){
     vec4 pb = min(max(x_o, elem.node.lowerBound), elem.node.upperBound);
     return length(x_o - pb);
 }
 
 deviceVertexData closestPointOutsideBVH(vec4 x_o){
+//    deviceVertexData closest = boundingPoints[0];
+//    float closestDist = length(x_o - closest.pos);
+//    for(int i = 0; i < monteCarloParams.vertexN; ++i){
+//        float dist = length(x_o - boundingPoints[i].pos);
+//        if(dist < closestDist) {
+//            closestDist = dist;
+//            closest = boundingPoints[i];
+//        }
+//    }
+//
+//    return closest;
+
     deviceBVHElem root = bvhElems[0];
     deviceBVHElem  leftChild, rightChild;
     bool done = false;

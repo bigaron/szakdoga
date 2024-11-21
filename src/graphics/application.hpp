@@ -26,7 +26,7 @@ class Application {
 	bool initiated;
 	double xCoord, yCoord;
 	
-	bool shouldDebug = false;
+	bool shouldDebug = false, paused = false;
 
 	void configureImGui();
 public:

@@ -46,7 +46,7 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 
 	std::vector<std::string> posVals, colVals;
 	size_t lineNum = 1ull;
-
+	
 	glm::vec4 defaultVec4 = glm::vec4(0,0,0,1);
 
 	//main loop of reading in values
@@ -80,7 +80,7 @@ void MonteCarlo::readInputFromFile(const char* filePath) {
 		this->boundingPoints.emplace_back(pos, col);
 		lineNum++;
 	}
-
+	
 	this->params.vertexN = this->boundingPoints.size();
 }
 
@@ -137,29 +137,22 @@ void MonteCarlo::draw() {
 		drawBVH();
 		return;
 	}
-	glUseProgram(this->monteCarloShader.computeID);
-	glDispatchCompute(static_cast<GLuint>(this->screenWidth / 32), static_cast<GLuint>(this->screenHeight / 32), static_cast<GLuint>(1u));
-	glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 
+	if (!isPaused) {
+		glUseProgram(this->monteCarloShader.computeID);
+		glDispatchCompute(static_cast<GLuint>(this->screenWidth / 32), static_cast<GLuint>(this->screenHeight / 32), static_cast<GLuint>(1u));
+		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 
-	float tex[] = {
-	1.0, 0.0,
-	1.0, 1.0,
-	0.0, 1.0,
-	0.0, 0.0
-	};
+		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
-	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
-
-	this->opts.pass++;
-	std::cout << this->opts.pass << " ";
-	glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(AlgorithmOpts), nullptr, GL_DYNAMIC_DRAW);
-	glCreateBuffers(1, &this->algoSSBO);
-	glNamedBufferStorage(this->algoSSBO, sizeof(AlgorithmOpts), static_cast<const void*>(&this->opts), GL_DYNAMIC_STORAGE_BIT);
-	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, this->algoSSBO);
-
+		std::cout << opts.pass << " ";
+		this->opts.pass++;
+		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(AlgorithmOpts), nullptr, GL_DYNAMIC_DRAW);
+		glCreateBuffers(1, &this->algoSSBO);
+		glNamedBufferStorage(this->algoSSBO, sizeof(AlgorithmOpts), static_cast<const void*>(&this->opts), GL_DYNAMIC_STORAGE_BIT);
+		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, this->algoSSBO);
+	}
 	glUseProgram(this->monteCarloShader.graphicsID);
 	glBindVertexArray(this->vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(this->textureCorners.size()));

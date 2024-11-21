@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include <exception>
+#include <algorithm>
 
 #include "vertexAttrib.hpp"
 #include "../helperFunctions/helperFunctions.hpp"
@@ -34,7 +35,7 @@ class MonteCarlo {
 	std::vector<hostPointIndex> indices;
 	std::vector<hostBVH> bvhToGPU;
 	std::vector<glm::vec4> pixels;
-	bool isDebugMode = false;
+	bool isDebugMode = false, isPaused = false;
 	void printDistanceBetweenChildren(const Node& root);
 public:
 	MonteCarlo(std::string pathPref=""):pathPref(pathPref) {
@@ -55,6 +56,7 @@ public:
 
 	void drawBVH();
 	void setDebugMode(bool flag) { isDebugMode = flag; }
+	void setPaused(bool flag) { isPaused = flag; }
 	void getValueAtMouse(int x, int y);
 
 	void generateBVH();
