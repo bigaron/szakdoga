@@ -27,7 +27,7 @@ void Application::configureImGui() {
 	if (ImGui::Checkbox("Pause", &paused)) {
 		monteCarlo.setPaused(paused);
 	}
-	ImGui::SliderInt("Depth: ", &bvhDepth, 0, 10);
+	ImGui::SliderInt("Depth: ", &bvhDepth, 0, 50);
 	monteCarlo.setDepth(bvhDepth);
 
 

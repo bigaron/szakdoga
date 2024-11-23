@@ -61,6 +61,7 @@ public:
 	void draw();
 
 	void drawBVH();
+	void drawBVHBox();
 	void setDebugMode(bool flag) { isDebugMode = flag; }
 	void setDepth(int depth) { this->bvhDepth = depth; }
 	void setPaused(bool flag) { isPaused = flag; }

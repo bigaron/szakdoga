@@ -94,25 +94,9 @@ void MonteCarlo::setPathPrefix(std::string pathPref){
 	this->pathPref = pathPref;
 }
 
-void MonteCarlo::drawBVH(){
-	GLuint bvhVBO, boundingPointsVBO;
+void MonteCarlo::drawBVHBox() {
+	GLuint bvhVBO;
 	glGenBuffers(1, &bvhVBO);
-	glGenBuffers(1, &boundingPointsVBO);
-
-	std::vector<glm::vec4> points = std::vector<glm::vec4>();
-	for (VertexAttrib& v : boundingPoints) {
-		points.push_back(v.pos);
-	}
-
-		
-
-	glUseProgram(this->bvhDebugBoundingsShader.graphicsID);
-	glBindBuffer(GL_ARRAY_BUFFER, boundingPointsVBO);
-	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), static_cast<const void*>(points.data()), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-	glDrawArrays(GL_POINTS, 0, points.size());
-
 	glUseProgram(this->bvhDebugShader.graphicsID);
 
 	unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
@@ -123,6 +107,26 @@ void MonteCarlo::drawBVH(){
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
 	glDrawArrays(GL_LINES, 0, boundingVerts.size());
+}
+
+
+void MonteCarlo::drawBVH(){
+	GLuint boundingPointsVBO;
+	glGenBuffers(1, &boundingPointsVBO);
+
+	std::vector<glm::vec4> points = std::vector<glm::vec4>();
+	for (VertexAttrib& v : boundingPoints) {
+		points.push_back(v.pos);
+	}
+
+	glUseProgram(this->bvhDebugBoundingsShader.graphicsID);
+	glBindBuffer(GL_ARRAY_BUFFER, boundingPointsVBO);
+	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), static_cast<const void*>(points.data()), GL_STATIC_DRAW);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	glDrawArrays(GL_POINTS, 0, points.size());
+
+	drawBVHBox();
 
 	//std::vector<glm::vec4> dists = bvh.distanceBetweenChildren();
 	//glUniform4f(loc, 1.0f, 0.0f, 1.0f, 1.0f);
@@ -134,33 +138,18 @@ void MonteCarlo::drawBVH(){
 }
 
 void MonteCarlo::draw() {
-	//if (isDebugMode) {
-	//	drawBVH();
-	//	return;
-	//}
 	if (isDebugMode) {
-		GLuint bvhVBO;
-		glGenBuffers(1, &bvhVBO);
-		glUseProgram(this->bvhDebugShader.graphicsID);
+		drawBVH();
+		return;
+	}	
 
-		unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
-		glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
-		glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
-		std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes(bvhDepth);
-		glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-		glDrawArrays(GL_LINES, 0, boundingVerts.size());
-	}
-
+	drawBVHBox();
 
 	if (!isPaused) {
 		glUseProgram(this->monteCarloShader.computeID);
 		glDispatchCompute(static_cast<GLuint>(this->screenWidth / 32), static_cast<GLuint>(this->screenHeight / 32), static_cast<GLuint>(1u));
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 
-		glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
 		std::cout << opts.pass << " ";
 		this->opts.pass++;
@@ -169,6 +158,8 @@ void MonteCarlo::draw() {
 		glNamedBufferStorage(this->algoSSBO, sizeof(AlgorithmOpts), static_cast<const void*>(&this->opts), GL_DYNAMIC_STORAGE_BIT);
 		glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, this->algoSSBO);
 	}
+	glBindBuffer(GL_ARRAY_BUFFER, this->vbo);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 	glUseProgram(this->monteCarloShader.graphicsID);
 	glBindVertexArray(this->vao);
 	glDrawArrays(GL_TRIANGLE_FAN, 0, static_cast<GLsizei>(this->textureCorners.size()));

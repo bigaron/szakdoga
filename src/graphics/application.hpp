@@ -28,7 +28,7 @@ class Application {
 	
 	bool shouldDebug = false, paused = false;
 
-	int bvhDepth = 1;
+	int bvhDepth = 0;
 
 	void configureImGui();
 public:
