@@ -178,21 +178,37 @@ void MonteCarlo::getValueAtMouse(int x, int y) {
 
 
 void MonteCarlo::printDistanceBetweenChildren(const Node& root) {
-	//if (root.itemCount != 0) return;
-	//Node& leftChild = bvh.nodes[root.leftChild];
-	//Node& rightChild = bvh.nodes[root.rightChild];
-	//std::cout << glm::length((leftChild.bb.lowerBound + leftChild.bb.upperBound) / 2.0f - (rightChild.bb.lowerBound + rightChild.bb.upperBound) / 2.0f) << std::endl;
-	//printDistanceBetweenChildren(leftChild);
-	//printDistanceBetweenChildren(rightChild);
+	if (root.itemCount != 0) return;
+	Node& leftChild = bvh.nodes[root.leftChild];
+	Node& rightChild = bvh.nodes[root.rightChild];
+	std::cout << glm::length((leftChild.bb.lowerBound + leftChild.bb.upperBound) / 2.0f - (rightChild.bb.lowerBound + rightChild.bb.upperBound) / 2.0f) << std::endl;
+	printDistanceBetweenChildren(leftChild);
+	printDistanceBetweenChildren(rightChild);
 }
 
 void MonteCarlo::generateBVH() {
-	this->bvh.buildBVH(this->boundingPoints);
-	this->bvhToGPU = this->bvh.bvhNodesToGPUNodes();
-	std::vector<BVHNode> nodes = this->bvh.getBVHNodes();
-	for (const BVHNode& node : nodes) {
-		std::cout << "{(" << node.aabbMin.x << "," << node.aabbMin.y << "),(" << node.aabbMax.x << "," << node.aabbMax.y << ")}" << std::endl;
+	this->bvh = BVH(this->boundingPoints);
+	this->bvhToGPU = this->bvh.hostBVHToDeviceBVH();
+	this->indices = this->bvh.hostIndicesToDevice();
+
+	unsigned int count = 0u;
+	unsigned int onlyOneChild = 0u;
+	for (const Node& node : this->bvh.nodes) {
+		std::cout << "{(" << node.bb.lowerBound.x << "," << node.bb.lowerBound.y << "),(" << node.bb.upperBound.x << "," << node.bb.upperBound.y << ")} - ";
+		if (node.itemCount != 0) {
+			std::cout << node.itemCount << " ----- ";
+			count += node.itemCount;
+			for (unsigned int i = 0u; i < node.itemCount; ++i)
+				std::cout << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.x << "," << bvh.points[bvh.pointIndex[node.itemStart + i]].pos.y << "\t";
+		}
+		else {
+			if ((node.leftChild == 0 || node.rightChild == 0) && node.bb.lowerBound != glm::vec4(-1, -1, 0, 1)) {
+				onlyOneChild++;
+			}
+		}
+		std::cout << std::endl;
 	}
+	std::cout << onlyOneChild << std::endl;
 }
 
 void MonteCarlo::reset(){

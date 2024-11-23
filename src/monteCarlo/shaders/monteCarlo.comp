@@ -5,8 +5,6 @@ layout(rgba32f, binding = 0) uniform image2D imgOut;
 #define M_PI 3.1415926535897932384626433832795
 const float inf = 100000000.f;
 const float EQUAL_FLOATS_EPS = 0.1f;
-
-
 // STRUCTS
 
 struct deviceVertexData{
@@ -14,11 +12,18 @@ struct deviceVertexData{
 	vec4 col;
 };
 
-// 32 + 8 + 8 = 48
-struct deviceBVHNode{
-    vec4 aabbMin, aabbMax; // 4 * 8
-    int leftChild, itemCount; //2 * 4
-    int padding1, padding2; //2 * 4
+// 32 + 8 + 8 = 48 byte
+struct deviceNode{
+    vec4 lowerBound, upperBound; // 2 * 16
+    int leftChild, rightChild;  // 2 * 4
+    int itemStart, itemCount; // 2 * 4
+};
+
+// 48 + 4 + 12 = 64 byte
+struct deviceBVHElem{
+    deviceNode node; // 48 byte
+    int nodeIndex; // 4 byte
+    float padding1, padding2, padding3; // 3 * 4 byte
 };
 
 struct MonteCarloParams{
@@ -49,7 +54,7 @@ layout(std430, binding = 1) readonly buffer ssbo1{
 };
 
 layout(std430, binding = 2) readonly buffer ssbo2{
-    deviceBVHNode bvhElems[];
+    deviceBVHElem bvhElems[];
 };
 
 layout(std430, binding = 3) readonly buffer BVHIndexingSsbo {
@@ -82,35 +87,40 @@ bool floatEq(float a, float b){
 }
 
 
-float distFromBVH(vec4 x_o, deviceBVHNode elem){
-    vec4 pb = min(max(x_o, elem.aabbMin), elem.aabbMax);
+float distFromBVH(vec4 x_o, deviceBVHElem elem){
+    vec4 pb = min(max(x_o, elem.node.lowerBound), elem.node.upperBound);
     return length(x_o - pb);
 }
 
-deviceVertexData closestPointBVH(vec4 x_o){
-    deviceBVHNode root = bvhElems[0];
-    deviceBVHNode  leftChild, rightChild;
+deviceVertexData closestPointOutsideBVH(vec4 x_o){
+    deviceBVHElem root = bvhElems[0];
+    deviceBVHElem  leftChild, rightChild;
     bool done = false;
 
     float lenLeft, lenRight;
 
     while(!done){
-        leftChild = bvhElems[root.leftChild];
-        rightChild = bvhElems[root.leftChild + 1];
+        leftChild = bvhElems[root.node.leftChild];
+        rightChild = bvhElems[root.node.rightChild];
         
-        lenLeft = distFromBVH(x_o, leftChild);
-        lenRight = distFromBVH(x_o, rightChild);
-        if(lenLeft < lenRight) root = leftChild;
-        else root = rightChild;    
-
+        if(root.node.leftChild == 0){
+           root = rightChild;
+        }else if(root.node.rightChild == 0){
+            root = leftChild;
+        }else {
+            lenLeft = distFromBVH(x_o, leftChild);
+            lenRight = distFromBVH(x_o, rightChild);
+            if(lenLeft < lenRight) root = leftChild;
+            else root = rightChild;    
+        }
         
-        if(root.itemCount > 0) done = true;
+        if(root.node.itemCount > 0) done = true;
     }
 
     float closest = inf;
     deviceVertexData value = boundingPoints[0];
 
-    for(int i = root.leftChild; i < root.leftChild + root.itemCount; ++i){
+    for(int i = root.node.itemStart; i < root.node.itemStart + root.node.itemCount; ++i){
         float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
         if(dist < closest) {
             closest = dist;
@@ -119,6 +129,18 @@ deviceVertexData closestPointBVH(vec4 x_o){
     }
 
     return value;
+}
+
+bool isPointInBVH(vec4 x_o, deviceNode bound){
+    return x_o.x >= bound.lowerBound.x && x_o.x <= bound.upperBound.x && x_o.y >= bound.lowerBound.y && x_o.y <= bound.upperBound.y;
+}
+
+deviceVertexData closestPointBVH(vec4 x_o){
+    deviceBVHElem root = bvhElems[0];
+    deviceBVHElem leftChild, rightChild;
+    bool outside = false;
+
+    return closestPointOutsideBVH(x_o);
 }
 
 vec4 MonteCarloEstim(vec4 x_o){

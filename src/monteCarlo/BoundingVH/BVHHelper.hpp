@@ -10,10 +10,4 @@ struct BVHNode {
 	bool isLeaf() const { return pointCount > 0; }
 };
 
-struct gpuBVHNode {
-	glm::vec4 aabbMin, aabbMax;
-	int leftChild, pointCount;
-	int padding1, padding2;
-};
-
 #endif

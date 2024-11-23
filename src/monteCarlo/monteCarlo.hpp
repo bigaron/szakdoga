@@ -14,8 +14,6 @@
 #include "MonteCarloParams.hpp"
 #include "hostBVH.hpp"
 #include "BVH.hpp"
-#include "BoundingVH/BoundingVolumeHierarchy.hpp"
-#include "BoundingVH/BVHHelper.hpp"
 
 class MonteCarlo {
 	std::vector<VertexAttrib> boundingPoints, textureCorners;
@@ -33,12 +31,10 @@ class MonteCarlo {
 	GLuint textureLoc = 0u, monteCarloTexture = 0u;
 	GLuint vbo = 0u;
 
-	BoundingVH bvh;
-
+	BVH bvh ;
 	std::vector<hostPointIndex> indices;
-	std::vector<gpuBVHNode> bvhToGPU;
+	std::vector<hostBVH> bvhToGPU;
 	std::vector<glm::vec4> pixels;
-	
 	bool isDebugMode = false, isPaused = false;
 	void printDistanceBetweenChildren(const Node& root);
 public:
