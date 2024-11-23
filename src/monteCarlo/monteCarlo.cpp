@@ -134,10 +134,25 @@ void MonteCarlo::drawBVH(){
 }
 
 void MonteCarlo::draw() {
+	//if (isDebugMode) {
+	//	drawBVH();
+	//	return;
+	//}
 	if (isDebugMode) {
-		drawBVH();
-		return;
+		GLuint bvhVBO;
+		glGenBuffers(1, &bvhVBO);
+		glUseProgram(this->bvhDebugShader.graphicsID);
+
+		unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
+		glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
+		glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
+		std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes(bvhDepth);
+		glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+		glDrawArrays(GL_LINES, 0, boundingVerts.size());
 	}
+
 
 	if (!isPaused) {
 		glUseProgram(this->monteCarloShader.computeID);
