@@ -6,7 +6,7 @@
 
 struct BVHNode {
 	glm::vec4 aabbMin, aabbMax;
-	uint32_t leftChild, pointCount;
+	uint32_t leftChild = 0, pointCount;
 	bool isLeaf() const { return pointCount > 0; }
 };
 

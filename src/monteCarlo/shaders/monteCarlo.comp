@@ -81,7 +81,6 @@ bool floatEq(float a, float b){
     return abs(a - b) < EQUAL_FLOATS_EPS;
 }
 
-
 float distFromBVH(vec4 x_o, deviceBVHNode elem){
     vec4 pb = min(max(x_o, elem.aabbMin), elem.aabbMax);
     return length(x_o - pb);
@@ -90,21 +89,31 @@ float distFromBVH(vec4 x_o, deviceBVHNode elem){
 deviceVertexData closestPointBVH(vec4 x_o){
     deviceBVHNode root = bvhElems[0];
     deviceBVHNode leftChild, rightChild;
-    bool done = false;
 
     float lenLeft, lenRight;
 
-    while(!done){
+//    int nodeStack[30];
+//    int stackIdx = 0;
+//    nodeStack[stackIdx++] = 0;
+//
+//    while(stackIdx != 0){
+//        int nodeIdx = nodeStack[--stackIdx];
+//        deviceBVHNode node = bvhElems[nodeIdx];
+//        
+//        if(node.itemCount > 0){ 
+//            
+//        }
+//    }
+
+
+    while(root.itemCount == 0){
         leftChild = bvhElems[root.leftChild];
         rightChild = bvhElems[root.leftChild + 1];
-        
+
         lenLeft = distFromBVH(x_o, leftChild);
         lenRight = distFromBVH(x_o, rightChild);
         if(lenLeft < lenRight) root = leftChild;
         else root = rightChild;    
-
-        
-        if(root.itemCount > 0) done = true;
     }
 
     float closest = inf;

@@ -37,9 +37,10 @@ class MonteCarlo {
 
 	std::vector<gpuBVHIndex> indices;
 	std::vector<gpuBVHNode> bvhToGPU;
+	std::vector<glm::vec4> boundingVerts;
 	std::vector<glm::vec4> pixels;
 	
-	bool isDebugMode = false, isPaused = false;
+	bool isDebugMode = false, isPaused = false, depthChanged = true;
 	int bvhDepth = 0;
 
 	void printDistanceBetweenChildren(const Node& root);
@@ -63,7 +64,11 @@ public:
 	void drawBVH();
 	void drawBVHBox();
 	void setDebugMode(bool flag) { isDebugMode = flag; }
-	void setDepth(int depth) { this->bvhDepth = depth; }
+	void setDepth(int depth) { 
+		if (depth == this->bvhDepth) return;
+		this->bvhDepth = depth; 
+		this->depthChanged = true;
+	}
 	void setPaused(bool flag) { isPaused = flag; }
 	void getValueAtMouse(int x, int y);
 

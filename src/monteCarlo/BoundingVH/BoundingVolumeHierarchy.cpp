@@ -97,35 +97,35 @@ std::vector<gpuBVHIndex> BoundingVH::bvhIndexToGPUIndex() {
 	return gpuIndicies;
 }
 
-std::vector<glm::vec4> BoundingVH::getNodeIndicesOfLayer(const BVHNode& node, std::vector<glm::vec4> base, int currentLayer, const int desiredDepth) {
+void BoundingVH::getNodeIndicesOfLayer(const BVHNode& node, int currentLayer, const int desiredDepth) {
 	if (currentLayer == desiredDepth) {
-		base.push_back(node.aabbMin);
-		base.push_back(node.aabbMax);
-		return base;
+		layerVerts.push_back(node.aabbMin);
+		layerVerts.push_back(node.aabbMax);
+		return;
 	}
-	std::vector<glm::vec4> left = getNodeIndicesOfLayer(bvhNodes[node.leftChild], base, currentLayer + 1, desiredDepth);
-	std::vector<glm::vec4> right = getNodeIndicesOfLayer(bvhNodes[node.leftChild + 1], base, currentLayer + 1, desiredDepth);
-
-	for (glm::vec4 val : left) base.push_back(val);
-	for (glm::vec4 val : right) base.push_back(val);
-	return base;
+	if (currentLayer > desiredDepth || node.pointCount > 0) return;
+	getNodeIndicesOfLayer(bvhNodes[node.leftChild], currentLayer + 1, desiredDepth);
+	getNodeIndicesOfLayer(bvhNodes[node.leftChild + 1], currentLayer + 1, desiredDepth);
 }
 
 std::vector<glm::vec4> BoundingVH::boundingBoxes(int layer) {
-	std::vector<glm::vec4> boxes, result;
+	std::vector<glm::vec4> result;
+	layerVerts.clear();
+	if (layer != -1) getNodeIndicesOfLayer(bvhNodes[rootNodeIdx], 1, layer);
+	else if (layer == -1) for (const BVHNode& node : bvhNodes) {
+		layerVerts.push_back(node.aabbMin);
+		layerVerts.push_back(node.aabbMax);
+	}
 
-	if (layer != 0) boxes = getNodeIndicesOfLayer(bvhNodes[rootNodeIdx], boxes, 1, layer);
-
-
-	for (int i = 0; i < boxes.size(); i += 2) {
-		result.push_back(boxes[i]);
-		result.push_back(glm::vec4(boxes[i + 1].x, boxes[i].y, 0, 1));
-		result.push_back(glm::vec4(boxes[i + 1].x, boxes[i].y, 0, 1));
-		result.push_back(boxes[i + 1]);
-		result.push_back(boxes[i + 1]);
-		result.push_back(glm::vec4(boxes[i].x, boxes[i + 1].y, 0, 1));
-		result.push_back(glm::vec4(boxes[i].x, boxes[i + 1].y, 0, 1));
-		result.push_back(boxes[i]);
+	for (int i = 0; i < layerVerts.size(); i += 2) {
+		result.push_back(layerVerts[i]);
+		result.push_back(glm::vec4(layerVerts[i + 1].x, layerVerts[i].y, 0, 1));
+		result.push_back(glm::vec4(layerVerts[i + 1].x, layerVerts[i].y, 0, 1));
+		result.push_back(layerVerts[i + 1]);
+		result.push_back(layerVerts[i + 1]);
+		result.push_back(glm::vec4(layerVerts[i].x, layerVerts[i + 1].y, 0, 1));
+		result.push_back(glm::vec4(layerVerts[i].x, layerVerts[i + 1].y, 0, 1));
+		result.push_back(layerVerts[i]);
 	}
 
 	return result;

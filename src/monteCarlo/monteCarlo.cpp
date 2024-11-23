@@ -100,9 +100,15 @@ void MonteCarlo::drawBVHBox() {
 	glUseProgram(this->bvhDebugShader.graphicsID);
 
 	unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
-	glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
+	glUniform4f(loc, 0.0f, 1.0f, 0.0f, 1.0f);
 	glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
-	std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes(bvhDepth);
+	if (this->depthChanged) {
+		boundingVerts = this->bvh.boundingBoxes(bvhDepth);
+		depthChanged = false;
+		std::cout << "----------------------------------------------------" << std::endl;
+		for (int i = 0; i < boundingVerts.size(); i += 8)
+			std::cout << "{(" << boundingVerts[i].x << "," << boundingVerts[i].y << "),(" << boundingVerts[i + 3].x << "," << boundingVerts[i + 3].y << ")}" << std::endl;
+	}
 	glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
@@ -151,7 +157,7 @@ void MonteCarlo::draw() {
 		glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT | GL_TEXTURE_UPDATE_BARRIER_BIT);
 
 
-		std::cout << opts.pass << " ";
+		//std::cout << opts.pass << " ";
 		this->opts.pass++;
 		glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(AlgorithmOpts), nullptr, GL_DYNAMIC_DRAW);
 		glCreateBuffers(1, &this->algoSSBO);
