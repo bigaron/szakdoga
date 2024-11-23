@@ -45,9 +45,17 @@ void BoundingVH::subdivide(size_t idx) {
 	subdivide(rightChildIdx);
 }
 
+
+void BoundingVH::buildBVH(const std::vector<VertexAttrib>& points) {
+	boundingPoints = points;
+	maxNodeCount = points.size() * 2;
+	buildBVH();
+}
+
 void BoundingVH::buildBVH() {
 	nodesUsed = 1u;
 	pointIdx.resize(boundingPoints.size());
+	bvhNodes.resize(maxNodeCount);
 	for (uint32_t i = 0u; i < boundingPoints.size(); ++i) {
 		pointIdx[i] = i;
 	}
@@ -58,4 +66,19 @@ void BoundingVH::buildBVH() {
 
 	updateNodeBounds(rootNodeIdx);
 	subdivide(rootNodeIdx);
+}
+
+std::vector<gpuBVHNode> BoundingVH::bvhNodesToGPUNodes() {
+	std::vector<gpuBVHNode> gpuNodes(bvhNodes.size());
+
+	gpuBVHNode tmp = gpuBVHNode();
+	for (const BVHNode& node : bvhNodes) {
+		tmp.aabbMin = node.aabbMin;
+		tmp.aabbMax = node.aabbMax;
+		tmp.leftChild = node.leftChild;
+		tmp.pointCount = node.pointCount;
+		gpuNodes.push_back(tmp);
+	}
+
+	return gpuNodes;
 }
