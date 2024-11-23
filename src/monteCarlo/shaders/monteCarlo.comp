@@ -89,7 +89,7 @@ float distFromBVH(vec4 x_o, deviceBVHNode elem){
 
 deviceVertexData closestPointBVH(vec4 x_o){
     deviceBVHNode root = bvhElems[0];
-    deviceBVHNode  leftChild, rightChild;
+    deviceBVHNode leftChild, rightChild;
     bool done = false;
 
     float lenLeft, lenRight;
@@ -138,6 +138,17 @@ vec4 MonteCarloEstim(vec4 x_o){
 }
 
 void main(){
+//    bool good = true;
+//    
+//    for(int i = 0; i < monteCarloParams.vertexN; ++i){
+//        if(pointIndex[i]._padding1 != -1 || pointIndex[i]._padding2 != -1 || pointIndex[i]._padding3 != -1 || pointIndex[i].pos < 0) good = false;
+//    }
+//
+//    if(good){
+//        imageStore(imgOut, ivec2(gl_GlobalInvocationID.xy), vec4(1,1,1,1));
+//        return;
+//    }
+
     int pass = opts.pass;
 	srand(ivec2(gl_GlobalInvocationID.xy), int(pass));
 

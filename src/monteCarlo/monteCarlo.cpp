@@ -118,18 +118,19 @@ void MonteCarlo::drawBVH(){
 	unsigned int loc = bvhDebugShader.getUniformLocation("color", bvhDebugShader.graphicsID);
 	glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
 	glBindBuffer(GL_ARRAY_BUFFER, bvhVBO);
-	std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes();
+	std::vector<glm::vec4> boundingVerts = this->bvh.boundingBoxes(bvhDepth);
 	glBufferData(GL_ARRAY_BUFFER, boundingVerts.size() * sizeof(glm::vec4), static_cast<const void*>(boundingVerts.data()), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
 	glDrawArrays(GL_LINES, 0, boundingVerts.size());
 
-	std::vector<glm::vec4> dists = bvh.distanceBetweenChildren();
-	glUniform4f(loc, 1.0f, 0.0f, 1.0f, 1.0f);
-	glBufferData(GL_ARRAY_BUFFER, dists.size() * sizeof(glm::vec4), static_cast<const void*>(dists.data()), GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
-	glDrawArrays(GL_LINES, 0, dists.size());
+	//std::vector<glm::vec4> dists = bvh.distanceBetweenChildren();
+	//glUniform4f(loc, 1.0f, 0.0f, 1.0f, 1.0f);
+	//glBufferData(GL_ARRAY_BUFFER, dists.size() * sizeof(glm::vec4), static_cast<const void*>(dists.data()), GL_STATIC_DRAW);
+	//glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+	//glDrawArrays(GL_LINES, 0, dists.size());
+
 }
 
 void MonteCarlo::draw() {
@@ -189,9 +190,15 @@ void MonteCarlo::printDistanceBetweenChildren(const Node& root) {
 void MonteCarlo::generateBVH() {
 	this->bvh.buildBVH(this->boundingPoints);
 	this->bvhToGPU = this->bvh.bvhNodesToGPUNodes();
+	this->indices = this->bvh.bvhIndexToGPUIndex();
 	std::vector<BVHNode> nodes = this->bvh.getBVHNodes();
 	for (const BVHNode& node : nodes) {
 		std::cout << "{(" << node.aabbMin.x << "," << node.aabbMin.y << "),(" << node.aabbMax.x << "," << node.aabbMax.y << ")}" << std::endl;
+	}
+
+	int i = 0;
+	for (const gpuBVHIndex& idx : indices) {
+		std::cout << "[" << i++ << "]. " << idx.index << std::endl;
 	}
 }
 
@@ -224,11 +231,14 @@ void MonteCarlo::cpySSBOStoGPU() {
 	glNamedBufferStorage(this->paramSSBO, sizeof(MonteCarloParameters), static_cast<const void*>(&this->params), GL_DYNAMIC_STORAGE_BIT);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, this->paramSSBO);
 
-	glNamedBufferStorage(this->bvhSSBO, sizeof(hostBVH) * this->bvhToGPU.size(), static_cast<const void*>(this->bvhToGPU.data()), GL_DYNAMIC_STORAGE_BIT);
+	glNamedBufferStorage(this->bvhSSBO, sizeof(gpuBVHNode) * this->bvhToGPU.size(), static_cast<const void*>(this->bvhToGPU.data()), GL_DYNAMIC_STORAGE_BIT);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, this->bvhSSBO);
 
-	glNamedBufferStorage(this->indexSSBO, sizeof(hostPointIndex) * this->indices.size(), static_cast<const void*>(this->indices.data()), GL_DYNAMIC_STORAGE_BIT);
+	glNamedBufferStorage(this->indexSSBO, sizeof(gpuBVHIndex) * this->indices.size(), static_cast<const void*>(this->indices.data()), GL_DYNAMIC_STORAGE_BIT);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, this->indexSSBO);
+
+	glNamedBufferStorage(this->algoSSBO, sizeof(AlgorithmOpts), static_cast<const void*>(&this->opts), GL_DYNAMIC_STORAGE_BIT);
+	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, this->algoSSBO);
 }
 
 void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height, int width){

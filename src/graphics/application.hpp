@@ -28,6 +28,8 @@ class Application {
 	
 	bool shouldDebug = false, paused = false;
 
+	int bvhDepth = 1;
+
 	void configureImGui();
 public:
 	Application(GLint width, GLint height, const char* title = "") : windowWidth(width), windowHeight(height), title(title), window(nullptr), initiated(false) {

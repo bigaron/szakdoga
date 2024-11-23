@@ -16,4 +16,8 @@ struct gpuBVHNode {
 	int padding1, padding2;
 };
 
+struct gpuBVHIndex {
+	int index, pass;
+	int padding1, padding2;
+};
 #endif
