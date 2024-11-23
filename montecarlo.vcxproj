@@ -142,6 +142,7 @@
     <ClCompile Include="src\imgui\imgui_tables.cpp" />
     <ClCompile Include="src\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\monteCarlo\BoundingVH\BoundingVolumeHierarchy.cpp" />
     <ClCompile Include="src\monteCarlo\BVH.cpp" />
     <ClCompile Include="src\monteCarlo\monteCarlo.cpp" />
   </ItemGroup>
@@ -158,6 +159,8 @@
     <ClInclude Include="src\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\imgui\imstb_textedit.h" />
     <ClInclude Include="src\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\monteCarlo\BoundingVH\BoundingVolumeHierarchy.hpp" />
+    <ClInclude Include="src\monteCarlo\BoundingVH\BVHHelper.hpp" />
     <ClInclude Include="src\monteCarlo\BVH.hpp" />
     <ClInclude Include="src\monteCarlo\GLFWCallBackHelper.hpp" />
     <ClInclude Include="src\monteCarlo\hostBVH.hpp" />

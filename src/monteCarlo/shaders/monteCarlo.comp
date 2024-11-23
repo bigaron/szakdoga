@@ -93,18 +93,6 @@ float distFromBVH(vec4 x_o, deviceBVHElem elem){
 }
 
 deviceVertexData closestPointOutsideBVH(vec4 x_o){
-//    deviceVertexData closest = boundingPoints[0];
-//    float closestDist = length(x_o - closest.pos);
-//    for(int i = 0; i < monteCarloParams.vertexN; ++i){
-//        float dist = length(x_o - boundingPoints[i].pos);
-//        if(dist < closestDist) {
-//            closestDist = dist;
-//            closest = boundingPoints[i];
-//        }
-//    }
-//
-//    return closest;
-
     deviceBVHElem root = bvhElems[0];
     deviceBVHElem  leftChild, rightChild;
     bool done = false;

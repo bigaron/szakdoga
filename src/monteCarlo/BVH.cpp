@@ -20,7 +20,7 @@ void BVH::subdivide(const unsigned int& nodeIndex) {
 	glm::vec3 dist = currentNode.bb.upperBound - currentNode.bb.lowerBound;
 	int axis = 0;
 	if (dist.y > dist.x) axis = 1;
-	if (dist.z > dist.y) axis = 2;
+	if (dist.z > dist[axis]) axis = 2;
 	float splitCoord = currentNode.bb.lowerBound[axis] + dist[axis] * 0.5f;
 	int i = currentNode.itemStart;
 	int j = i + currentNode.itemCount - 1;

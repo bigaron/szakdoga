@@ -54,6 +54,9 @@
     <ClCompile Include="src\imgui\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\monteCarlo\BoundingVH\BoundingVolumeHierarchy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shader.hpp">
@@ -114,6 +117,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\imgui\imgui_stdlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monteCarlo\BoundingVH\BoundingVolumeHierarchy.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\monteCarlo\BoundingVH\BVHHelper.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
