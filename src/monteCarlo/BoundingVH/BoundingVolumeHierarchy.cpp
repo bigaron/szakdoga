@@ -130,3 +130,12 @@ std::vector<glm::vec4> BoundingVH::boundingBoxes(int layer) {
 
 	return result;
 }
+
+void BoundingVH::maxDepth(const BVHNode& node, int currentDepth) {
+	if (node.isLeaf()) {
+		if (currentDepth > maxDe) maxDe = currentDepth;
+		return;
+	}
+	maxDepth(bvhNodes[node.leftChild], currentDepth + 1);
+	maxDepth(bvhNodes[node.leftChild + 1], currentDepth + 1);
+}

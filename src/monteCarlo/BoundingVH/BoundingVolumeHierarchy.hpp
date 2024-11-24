@@ -20,6 +20,8 @@ class BoundingVH {
 	void updateNodeBounds(size_t idx);
 	void subdivide(size_t idx);
 
+	int maxDe;
+
 	void getNodeIndicesOfLayer(const BVHNode& node, int currentLayer, const int desiredDepth = 0);
 public:
 	BoundingVH(): maxNodeCount(0), nodesUsed(1) {}
@@ -33,6 +35,11 @@ public:
 	std::vector<gpuBVHNode> bvhNodesToGPUNodes();
 	std::vector<gpuBVHIndex> bvhIndexToGPUIndex();
 	std::vector<glm::vec4> boundingBoxes(int layer = 0);
+	void maxDepth(const BVHNode& node, int currentDepth);
+	int getMaxDepth() {
+		maxDepth(bvhNodes[rootNodeIdx], 0);
+		return maxDe;
+	}
 };
 
 #endif // !BoundingVolumeHierarchy

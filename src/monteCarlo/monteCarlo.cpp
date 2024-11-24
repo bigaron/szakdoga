@@ -212,6 +212,8 @@ void MonteCarlo::generateBVH() {
 	for (const gpuBVHIndex& idx : indices) {
 		std::cout << "[" << i++ << "]. " << idx.index << std::endl;
 	}
+
+	std::cout << bvh.getMaxDepth() << std::endl;
 }
 
 void MonteCarlo::reset(){
