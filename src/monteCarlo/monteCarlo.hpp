@@ -79,6 +79,7 @@ public:
 	void setParams(const MonteCarloParameters& params);
 	void setupMonteCarlo(const MonteCarloParameters& params, int height = 720, int width = 1280);
 	void setScreenDim(int height, int width);
+	bool isDone() { return opts.pass == 25; }
 };
 
 #endif // !MONTECARLO_HPP

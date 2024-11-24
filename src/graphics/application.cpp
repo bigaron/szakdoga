@@ -90,7 +90,8 @@ void Application::mainLoop(){
 		std::cout << "The OpenGL has not been initialized yet." << std::endl;
 		return;
 	}
-
+	bool firstRun = true;
+	std::chrono::system_clock::time_point start;
 	try {
 		/*monteCarlo.readInputFromFile("input/generated.txt");
 		monteCarlo.readInputFromFile("input/generated2.txt");*/
@@ -130,6 +131,12 @@ void Application::mainLoop(){
 	}
 	monteCarlo.setDebugMode(false);
 	monteCarlo.cpySSBOStoGPU();
+
+	if (firstRun) {
+		start = std::chrono::system_clock::now();
+		firstRun = false;
+	}
+
 	while (!glfwWindowShouldClose(this->window)) {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -140,6 +147,12 @@ void Application::mainLoop(){
 			continue;
 		}
 		monteCarlo.draw();
+
+		if (monteCarlo.isDone()) {
+			std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+			std::chrono::duration<double> seconds = end - start;
+			std::cout << "--------------------------------" << std::endl << "Done: " << seconds.count()  << std::endl;
+		}
 
 		configureImGui();
 

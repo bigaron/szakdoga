@@ -306,7 +306,7 @@ void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height,
 	glBindImageTexture(0, this->monteCarloTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->monteCarloTexture);
-
+	this->opts._padding1 = 0;
 	this->opts.pass = 1;
 	this->pixels.resize(static_cast<size_t>(this->screenHeight) * this->screenWidth);
 }

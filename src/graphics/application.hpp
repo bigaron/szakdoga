@@ -5,6 +5,7 @@
 #include <string>
 #include <exception>
 #include <fstream>
+#include <chrono>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>

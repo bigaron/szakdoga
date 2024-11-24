@@ -35,7 +35,7 @@ struct indexStruct{
 
 struct algorithmOptStruct{
     int pass;
-    int _padding1, _padding2, _padding3;   
+    int isBVH, _padding2, _padding3;   
 };
 
 // SSBOs
@@ -87,6 +87,20 @@ float distFromBVH(vec4 x_o, deviceBVHNode elem){
 }
 
 deviceVertexData closestPointBVH(vec4 x_o){
+    if(opts.isBVH == 0){
+        float closest = inf;
+        deviceVertexData value = boundingPoints[0];
+        for(int i = 0; i < monteCarloParams.vertexN; ++i){
+            float dist = length(x_o - boundingPoints[i].pos);
+            if(dist < closest) {
+                closest = dist;
+                value = boundingPoints[i];
+            }
+        }  
+        
+        return value;
+    }
+
     int nodeStack[32];
     int stackIdx = 0;
     nodeStack[stackIdx++] = 0;
@@ -145,17 +159,6 @@ vec4 MonteCarloEstim(vec4 x_o){
 }
 
 void main(){
-//    bool good = true;
-//    
-//    for(int i = 0; i < monteCarloParams.vertexN; ++i){
-//        if(pointIndex[i]._padding1 != -1 || pointIndex[i]._padding2 != -1 || pointIndex[i]._padding3 != -1 || pointIndex[i].pos < 0) good = false;
-//    }
-//
-//    if(good){
-//        imageStore(imgOut, ivec2(gl_GlobalInvocationID.xy), vec4(1,1,1,1));
-//        return;
-//    }
-
     int pass = opts.pass;
 	srand(ivec2(gl_GlobalInvocationID.xy), int(pass));
 
