@@ -92,16 +92,16 @@ void Application::mainLoop(){
 	}
 
 	try {
-		monteCarlo.readInputFromFile("input/generated.txt");
-		monteCarlo.readInputFromFile("input/generated2.txt");
+		/*monteCarlo.readInputFromFile("input/generated.txt");
+		monteCarlo.readInputFromFile("input/generated2.txt");*/
 
-		//monteCarlo.readInputFromFile("input/line.txt");
-		//monteCarlo.readInputFromFile("input/line2.txt");
-		//monteCarlo.readInputFromFile("input/line3.txt");
+		monteCarlo.readInputFromFile("input/line.txt");
+		monteCarlo.readInputFromFile("input/line2.txt");
+		monteCarlo.readInputFromFile("input/line3.txt");
 
-		/*generateLineToFile("input/triangle1.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 0, 0, 1));
-		generateLineToFile("input/triangle2.txt", glm::vec4(300, 151, 0, 1), glm::vec4(375, 255, 0, 1), 0.005f, glm::vec4(0, 1, 0, 1));
-		generateLineToFile("input/triangle3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(0, 0, 1, 1));*/
+		//generateLineToFile("input/triangle1.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 0, 0, 1));
+		//generateLineToFile("input/triangle2.txt", glm::vec4(300, 151, 0, 1), glm::vec4(375, 255, 0, 1), 0.005f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/triangle3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(0, 0, 1, 1));
 
 		//generateLineToFile("input/triangleAndPoint4.txt", glm::vec4(600, 600, 0, 1), glm::vec4(600, 600, 0, 1), 0.5f, glm::vec4(0, 0, 0, 1));
 		//generateLineToFile("input/triangleAndPoint.txt", glm::vec4(300, 150, 0, 1), glm::vec4(450, 150, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));

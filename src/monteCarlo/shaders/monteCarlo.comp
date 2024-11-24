@@ -87,43 +87,41 @@ float distFromBVH(vec4 x_o, deviceBVHNode elem){
 }
 
 deviceVertexData closestPointBVH(vec4 x_o){
-    deviceBVHNode root = bvhElems[0];
-    deviceBVHNode leftChild, rightChild;
-
-    float lenLeft, lenRight;
-
-//    int nodeStack[30];
-//    int stackIdx = 0;
-//    nodeStack[stackIdx++] = 0;
-//
-//    while(stackIdx != 0){
-//        int nodeIdx = nodeStack[--stackIdx];
-//        deviceBVHNode node = bvhElems[nodeIdx];
-//        
-//        if(node.itemCount > 0){ 
-//            
-//        }
-//    }
-
-
-    while(root.itemCount == 0){
-        leftChild = bvhElems[root.leftChild];
-        rightChild = bvhElems[root.leftChild + 1];
-
-        lenLeft = distFromBVH(x_o, leftChild);
-        lenRight = distFromBVH(x_o, rightChild);
-        if(lenLeft < lenRight) root = leftChild;
-        else root = rightChild;    
-    }
-
+    int nodeStack[32];
+    int stackIdx = 0;
+    nodeStack[stackIdx++] = 0;
+    
     float closest = inf;
     deviceVertexData value = boundingPoints[0];
 
-    for(int i = root.leftChild; i < root.leftChild + root.itemCount; ++i){
-        float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
-        if(dist < closest) {
-            closest = dist;
-            value = boundingPoints[pointIndex[i].pos];
+    while(stackIdx > 0){
+        int nodeIdx = nodeStack[--stackIdx];
+        deviceBVHNode node = bvhElems[nodeIdx];
+        
+        if(node.itemCount > 0){ 
+            for(int i = node.leftChild; i < node.leftChild + node.itemCount; ++i){
+                float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
+                if(dist < closest) {
+                    closest = dist;
+                    value = boundingPoints[pointIndex[i].pos];
+                }
+            }
+        }else{
+            int leftChildIdx = node.leftChild;
+            int rightChildIdx = node.leftChild + 1;
+            deviceBVHNode leftChild = bvhElems[leftChildIdx];
+            deviceBVHNode rightChild = bvhElems[rightChildIdx];
+
+            float lenLeft = distFromBVH(x_o, leftChild);
+            float lenRight = distFromBVH(x_o, rightChild);
+
+            if(lenLeft < lenRight){
+                if(lenRight < closest) nodeStack[stackIdx++] = rightChildIdx;
+                if(lenLeft < closest) nodeStack[stackIdx++] = leftChildIdx;
+            }else{
+                if(lenLeft < closest) nodeStack[stackIdx++] = leftChildIdx;
+                if(lenRight < closest) nodeStack[stackIdx++] = rightChildIdx;
+            }
         }
     }
 
