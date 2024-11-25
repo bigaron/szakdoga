@@ -6,7 +6,6 @@ layout(rgba32f, binding = 0) uniform image2D imgOut;
 const float inf = 100000000.f;
 const float EQUAL_FLOATS_EPS = 0.1f;
 
-
 // STRUCTS
 
 struct deviceVertexData{
@@ -77,8 +76,9 @@ void  srand( ivec2 p, int frame ){
 }
 //==============================================================
 
-bool floatEq(float a, float b){
-    return abs(a - b) < EQUAL_FLOATS_EPS;
+float getMaxDistFromBVH(vec4 x_o, int elemIdx){
+    deviceBVHNode elem = bvhElems[elemIdx];
+    return max(length(elem.aabbMax - x_o), length(x_o - elem.aabbMin));
 }
 
 float distFromBVH(vec4 x_o, deviceBVHNode elem){
@@ -86,7 +86,62 @@ float distFromBVH(vec4 x_o, deviceBVHNode elem){
     return length(x_o - pb);
 }
 
-deviceVertexData closestPointBVH(vec4 x_o){
+int testBVHDistQuery(vec4 x_o, float maxDist){
+    int nodeIdx = 0;
+    int stackPtr = 0;
+    int nodeStack[32];
+
+    float minDist = inf;
+    float dist;
+    int closestBoundIdx = -1;
+
+    while(true){
+        deviceBVHNode node = bvhElems[nodeIdx];
+        if(distFromBVH(x_o, node) <=maxDist){
+            if(node.itemCount > 0){
+                for(int i = node.leftChild; i < node.leftChild + node.itemCount; ++i){
+                    dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
+                    if(dist <= maxDist){
+                        maxDist = dist;
+                        closestBoundIdx = pointIndex[i].pos;
+                    }
+                }
+            }else{
+                int leftChildIdx = node.leftChild;
+                int rightChildIdx = node.leftChild + 1;
+                float distFromLeft = distFromBVH(x_o, bvhElems[leftChildIdx]);
+                float distFromRight = distFromBVH(x_o, bvhElems[rightChildIdx]);
+
+                if(distFromRight < distFromLeft){
+                    if(distFromLeft <= maxDist) {
+                        nodeStack[stackPtr++] = leftChildIdx;
+                        maxDist = max(maxDist, getMaxDistFromBVH(x_o, leftChildIdx));
+                    }
+                    if(distFromRight <= maxDist) {
+                        nodeStack[stackPtr++] = rightChildIdx;
+                        maxDist = max(maxDist, getMaxDistFromBVH(x_o, rightChildIdx));
+                    }
+                }else{
+                    if(distFromRight <= maxDist){ 
+                        nodeStack[stackPtr++] = rightChildIdx;
+                        maxDist = max(maxDist, getMaxDistFromBVH(x_o, rightChildIdx));
+                    }
+                    if(distFromLeft <= maxDist){
+                        nodeStack[stackPtr++] = leftChildIdx;
+                        maxDist = max(maxDist, getMaxDistFromBVH(x_o, leftChildIdx));
+                    }
+                }
+            } 
+        }
+  
+        if(stackPtr < 1) return closestBoundIdx;
+        nodeIdx = nodeStack[--stackPtr];
+    }
+}
+
+
+
+deviceVertexData closestPointBVH(vec4 x_o, float maxDist){
     if(opts.isBVH == 0){
         float closest = inf;
         deviceVertexData value = boundingPoints[0];
@@ -144,13 +199,13 @@ deviceVertexData closestPointBVH(vec4 x_o){
 
 vec4 MonteCarloEstim(vec4 x_o){
     int it = 0;
-    deviceVertexData closestPoint = closestPointBVH(x_o);
+    deviceVertexData closestPoint = closestPointBVH(x_o, inf);
     float radius = length(x_o - closestPoint.pos);
     while(it < monteCarloParams.maxWalk && radius > monteCarloParams.eps) {  
         it++;
         float th = frand() * 2 * M_PI;
         x_o = vec4(x_o.x + radius * cos(th), x_o.y + radius * sin(th), x_o.zw);
-        closestPoint = closestPointBVH(x_o);
+        closestPoint = closestPointBVH(x_o, radius);
         radius = length(x_o - closestPoint.pos);
     }
 

@@ -93,8 +93,8 @@ void Application::mainLoop(){
 	bool firstRun = true;
 	std::chrono::system_clock::time_point start;
 	try {
-		/*monteCarlo.readInputFromFile("input/generated.txt");
-		monteCarlo.readInputFromFile("input/generated2.txt");*/
+		//monteCarlo.readInputFromFile("input/generated.txt");
+		//monteCarlo.readInputFromFile("input/generated2.txt");
 
 		//monteCarlo.readInputFromFile("input/line.txt");
 		//monteCarlo.readInputFromFile("input/line2.txt");
@@ -110,13 +110,13 @@ void Application::mainLoop(){
 		//generateLineToFile("input/triangleAndPoint3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));
 
 
-		monteCarlo.readInputFromFile("input/triangle1.txt");
-		monteCarlo.readInputFromFile("input/triangle2.txt");
-		monteCarlo.readInputFromFile("input/triangle3.txt");
-		//monteCarlo.readInputFromFile("input/triangleAndPoint.txt");
-		//monteCarlo.readInputFromFile("input/triangleAndPoint2.txt");
-		//monteCarlo.readInputFromFile("input/triangleAndPoint3.txt");
-		//monteCarlo.readInputFromFile("input/triangleAndPoint4.txt");
+		//monteCarlo.readInputFromFile("input/triangle1.txt");
+		//monteCarlo.readInputFromFile("input/triangle2.txt");
+		//monteCarlo.readInputFromFile("input/triangle3.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint2.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint3.txt");
+		monteCarlo.readInputFromFile("input/triangleAndPoint4.txt");
 
 
 		monteCarlo.generateBVH();
