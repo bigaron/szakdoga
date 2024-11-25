@@ -161,7 +161,7 @@ deviceVertexData closestPointBVH(vec4 x_o, float maxDist){
     nodeStack[stackIdx++] = 0;
     
     float closest = inf;
-    deviceVertexData value = boundingPoints[0];
+    int closestPointIdx = 0;
 
     while(stackIdx > 0){
         int nodeIdx = nodeStack[--stackIdx];
@@ -172,7 +172,7 @@ deviceVertexData closestPointBVH(vec4 x_o, float maxDist){
                 float dist = length(x_o - boundingPoints[pointIndex[i].pos].pos);
                 if(dist < closest) {
                     closest = dist;
-                    value = boundingPoints[pointIndex[i].pos];
+                    closestPointIdx = pointIndex[i].pos;
                 }
             }
         }else{
@@ -194,7 +194,7 @@ deviceVertexData closestPointBVH(vec4 x_o, float maxDist){
         }
     }
 
-    return value;
+    return boundingPoints[closestPointIdx];
 }
 
 vec4 MonteCarloEstim(vec4 x_o){
