@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="168.62283mm"
+   height="129.41681mm"
+   viewBox="0 0 168.62283 129.41681"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="OpenGLPipeline.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   inkscape:export-filename="OpenGLPipeline.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.2638547"
+     inkscape:cx="196.34652"
+     inkscape:cy="195.02135"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="2391"
+     inkscape:window-y="147"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="168.62283"
+       height="129.41681"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <defs
+     id="defs1">
+    <marker
+       style="overflow:visible"
+       id="ArrowWide"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path3" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ArrowWide-1"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path3-7" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ArrowWide-1-6"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path3-7-1" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ArrowWide-1-1"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path3-7-6" />
+    </marker>
+    <marker
+       style="overflow:visible"
+       id="ArrowWide-1-8"
+       refX="0"
+       refY="0"
+       orient="auto-start-reverse"
+       inkscape:stockid="Wide arrow"
+       markerWidth="1"
+       markerHeight="1"
+       viewBox="0 0 1 1"
+       inkscape:isstock="true"
+       inkscape:collect="always"
+       preserveAspectRatio="xMidYMid">
+      <path
+         style="fill:none;stroke:context-stroke;stroke-width:1;stroke-linecap:butt"
+         d="M 3,-3 0,0 3,3"
+         transform="rotate(180,0.125,0)"
+         sodipodi:nodetypes="ccc"
+         id="path3-7-9" />
+    </marker>
+  </defs>
+  <path
+     style="fill:#ff8958;stroke:#000000;stroke-width:0.884441;stroke-linecap:square;stroke-dasharray:none;marker-end:url(#ArrowWide)"
+     d="m 32.020084,12.897796 v 6.029847"
+     id="path1" />
+  <path
+     style="fill:#ff8958;stroke:#000000;stroke-width:0.90748;stroke-linecap:square;stroke-dasharray:none;marker-end:url(#ArrowWide-1)"
+     d="m 32.020085,32.001343 v 6.348085"
+     id="path1-5" />
+  <path
+     style="fill:#ff8958;stroke:#000000;stroke-width:0.90748;stroke-linecap:square;stroke-dasharray:none;marker-end:url(#ArrowWide-1-6)"
+     d="m 32.020231,51.485488 v 6.348085"
+     id="path1-5-3" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-6.6695738,-6.146399)">
+    <g
+       id="g1"
+       inkscape:label="modifiableStage"
+       transform="matrix(1.000781,0,0,0.65915951,-0.03021503,2.1083082)">
+      <rect
+         style="fill:#71ff8f;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1"
+         width="63.724136"
+         height="18.775862"
+         x="6.8275871"
+         y="6.2586203" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.92667px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.411201;stroke-linecap:square"
+         x="33.689968"
+         y="13.623006"
+         id="text1"
+         transform="scale(0.75343988,1.3272459)"><tspan
+           sodipodi:role="line"
+           id="tspan1"
+           style="stroke-width:0.411202"
+           x="33.689968"
+           y="13.623006">Vertex Shader</tspan></text>
+    </g>
+    <g
+       id="g2-7"
+       inkscape:label="modifiableStage"
+       transform="matrix(1.000781,0,0,0.65915951,104.99811,2.1083082)">
+      <rect
+         style="fill:#73ff90;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-7"
+         width="63.724136"
+         height="18.775862"
+         x="6.8275871"
+         y="6.2586203" />
+      <text
+         xml:space="preserve"
+         style="font-size:5.1894px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.433129;stroke-linecap:square"
+         x="26.562193"
+         y="13.902574"
+         id="text1-3"
+         transform="scale(0.79590644,1.2564291)"><tspan
+           sodipodi:role="line"
+           id="tspan1-3"
+           style="stroke-width:0.43313"
+           x="26.562193"
+           y="13.902574">Compute Shader</tspan></text>
+    </g>
+    <g
+       id="g2-8"
+       inkscape:label="modifiableStage"
+       transform="matrix(1.0007864,0,0,0.65701807,-0.03042395,21.676297)">
+      <rect
+         style="fill:#73ff90;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-8"
+         width="63.724136"
+         height="18.775862"
+         x="6.8275871"
+         y="6.2586203" />
+      <text
+         xml:space="preserve"
+         style="font-size:5.35794px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.447198;stroke-linecap:square"
+         x="10.07824"
+         y="14.928352"
+         id="text1-2"
+         transform="scale(0.82660476,1.209768)"><tspan
+           sodipodi:role="line"
+           id="tspan1-9"
+           style="stroke-width:0.447199"
+           x="10.07824"
+           y="14.928352">Tessellation Control Shader</tspan></text>
+    </g>
+    <g
+       id="g2-8-8"
+       inkscape:label="modifiableStage"
+       transform="matrix(1.000792,0,0,0.65486518,-0.03063921,60.711017)">
+      <rect
+         style="fill:#73ff90;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-8-4"
+         width="63.724136"
+         height="18.775862"
+         x="6.8275871"
+         y="6.2586203" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.2164px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.351918;stroke-linecap:square"
+         x="12.234544"
+         y="15.182582"
+         id="text1-2-0"
+         transform="scale(0.87001632,1.1494037)"><tspan
+           sodipodi:role="line"
+           id="tspan1-9-7"
+           style="stroke-width:0.351919"
+           x="12.234544"
+           y="15.182582">Tessellation Evaluation Shader</tspan></text>
+    </g>
+    <g
+       id="g2-8-8-7"
+       inkscape:label="modifiableStage"
+       transform="matrix(1.0007975,0,0,0.6527007,-0.03085227,80.197379)">
+      <rect
+         style="fill:#73ff90;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-8-4-3"
+         width="63.724136"
+         height="18.775862"
+         x="6.827589"
+         y="6.2586145" />
+      <text
+         xml:space="preserve"
+         style="font-size:5.64715px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.471335;stroke-linecap:square"
+         x="25.286768"
+         y="13.567327"
+         id="text1-2-0-7"
+         transform="scale(0.76597923,1.3055184)"><tspan
+           sodipodi:role="line"
+           id="tspan1-9-7-2"
+           style="stroke-width:0.471337"
+           x="25.286768"
+           y="13.567327">Geometry Shader</tspan></text>
+    </g>
+    <g
+       id="g2"
+       inkscape:label="unmodifiableStage"
+       transform="matrix(1.0007873,0,0,0.65666835,-71.886285,41.192534)">
+      <rect
+         style="fill:#ff8958;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-1"
+         width="63.724136"
+         height="18.775862"
+         x="78.627037"
+         y="6.2586212" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.28579px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.357711;stroke-linecap:square"
+         x="97.932312"
+         y="14.682996"
+         id="text1-8"
+         transform="scale(0.83643568,1.1955492)"><tspan
+           sodipodi:role="line"
+           id="tspan1-4"
+           style="stroke-width:0.357712"
+           x="97.932312"
+           y="14.682996">Tessellation Primitive Generator</tspan></text>
+    </g>
+    <g
+       id="g2-5"
+       inkscape:label="unmodifiableStage"
+       transform="matrix(1.0007873,0,0,0.65666835,-71.886436,99.60496)">
+      <rect
+         style="fill:#ff8958;fill-opacity:1;stroke:#000000;stroke-width:0.264999;stroke-linecap:square;stroke-opacity:1"
+         id="rect1-1-7"
+         width="63.724136"
+         height="18.775862"
+         x="78.627037"
+         y="6.2586212" />
+      <text
+         xml:space="preserve"
+         style="font-size:4.04593px;text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:none;stroke:#000000;stroke-width:0.337691;stroke-linecap:square"
+         x="127.57996"
+         y="13.728504"
+         id="text1-8-5"
+         transform="scale(0.78473835,1.2743101)"><tspan
+           sodipodi:role="line"
+           id="tspan1-4-4"
+           style="stroke-width:0.337692"
+           x="127.57996"
+           y="13.728504">Rasterization</tspan></text>
+    </g>
+  </g>
+  <path
+     style="fill:#ff8958;stroke:#000000;stroke-width:0.90748;stroke-linecap:square;stroke-dasharray:none;marker-end:url(#ArrowWide-1-1)"
+     d="m 32.101247,71.261248 v 6.348085"
+     id="path1-5-7" />
+  <path
+     style="fill:#ff8958;stroke:#000000;stroke-width:0.90748;stroke-linecap:square;stroke-dasharray:none;marker-end:url(#ArrowWide-1-8)"
+     d="m 32.020092,90.693133 v 6.348085"
+     id="path1-5-9" />
+</svg>
