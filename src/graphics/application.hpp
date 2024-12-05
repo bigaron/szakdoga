@@ -42,8 +42,8 @@ public:
 
 	void createContext();
 	void mainLoop();
-
-	void generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4>& contP, float gran);
+	void readFromFile(std::string fileSrc);
+	void generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4>& contP, float gran, const glm::vec4& col);
 	void generateLineToFile(std::string fileSrc, const glm::vec4& startP, const glm::vec4& endp, float gran, const glm::vec4& col);
 	
 

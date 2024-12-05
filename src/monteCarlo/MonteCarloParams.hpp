@@ -10,7 +10,7 @@ struct MonteCarloParameters {
 
 struct AlgorithmOpts {
 	int pass;
-	int _padding1, _padding2, _padding3;
+	int useBVH, _padding2, _padding3;
 };
 
 #endif // !MONTECARLO_MONTECARLOPARAMS_HPP

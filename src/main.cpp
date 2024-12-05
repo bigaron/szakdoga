@@ -17,7 +17,7 @@ int main() {
 	size_t size2 = sizeof(unsigned int);
 	std::cout << (size == sizeof(size_t) ? "true" : "false");
 
-	Application application(static_cast<GLint>(1280), static_cast<GLint>(736), "test");
+	Application application(static_cast<GLint>(1280), static_cast<GLint>(736), "MonteCarlo");
 	//application.createContext();
 	application.mainLoop();
 

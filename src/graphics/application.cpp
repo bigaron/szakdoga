@@ -13,6 +13,10 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	}
 }
 
+void Application::readFromFile(std::string fileSrc) {
+	monteCarlo.readInputFromFile(fileSrc.c_str());
+}
+
 void Application::configureImGui() {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -96,6 +100,29 @@ void Application::mainLoop(){
 		//monteCarlo.readInputFromFile("input/generated.txt");
 		//monteCarlo.readInputFromFile("input/generated2.txt");
 
+		//diameter -> 60 -> 30 
+		//1280 -> 640
+		//732 -> 366
+		//generateLineToFile("input/square1.txt", glm::vec4(610, 336, 0, 1), glm::vec4(670, 336, 0, 1), 0.01f, glm::vec4(1,1,1,1));
+		//generateLineToFile("input/square2.txt", glm::vec4(670, 336, 0, 1), glm::vec4(670, 396, 0, 1), 0.01f, glm::vec4(1, 1, 1, 1));
+		//generateLineToFile("input/square3.txt", glm::vec4(670, 396, 0, 1), glm::vec4(610, 396, 0, 1), 0.01f, glm::vec4(1, 1, 1, 1));
+		//generateLineToFile("input/square4.txt", glm::vec4(610, 396, 0, 1), glm::vec4(610, 336, 0, 1), 0.01f, glm::vec4(1, 1, 1, 1));
+
+		//generateLineToFile("input/square5.txt", glm::vec4(609, 335, 0, 1), glm::vec4(671, 335, 0, 1), 0.01f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/square6.txt", glm::vec4(671, 335, 0, 1), glm::vec4(671, 397, 0, 1), 0.01f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/square7.txt", glm::vec4(671, 397, 0, 1), glm::vec4(609, 397, 0, 1), 0.01f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/square8.txt", glm::vec4(609, 397, 0, 1), glm::vec4(609, 337, 0, 1), 0.01f, glm::vec4(0, 1, 0, 1));
+
+		//monteCarlo.readInputFromFile("input/square1.txt");
+		//monteCarlo.readInputFromFile("input/square2.txt");
+		//monteCarlo.readInputFromFile("input/square3.txt");
+		//monteCarlo.readInputFromFile("input/square4.txt");
+		//monteCarlo.readInputFromFile("input/square5.txt");
+		//monteCarlo.readInputFromFile("input/square6.txt");
+		//monteCarlo.readInputFromFile("input/square7.txt");
+		//monteCarlo.readInputFromFile("input/square8.txt");
+
+
 		//monteCarlo.readInputFromFile("input/line.txt");
 		//monteCarlo.readInputFromFile("input/line2.txt");
 		//monteCarlo.readInputFromFile("input/line3.txt");
@@ -110,14 +137,40 @@ void Application::mainLoop(){
 		//generateLineToFile("input/triangleAndPoint3.txt", glm::vec4(376, 256, 0, 1), glm::vec4(449, 149, 0, 1), 0.005f, glm::vec4(1, 1, 0, 1));
 
 
+		generateLineToFile("input/fourDividers1.txt", glm::vec4(100, 10, 0, 1), glm::vec4(10,100, 0, 1), 0.0125f, glm::vec4(0.2, 0.6, 0.8, 1));
+		generateLineToFile("input/fourDividers2.txt", glm::vec4(600, 10, 0, 1), glm::vec4(10, 600, 0, 1), 0.0125f, glm::vec4(0.6, 0.2, 0.8, 1));
+		generateLineToFile("input/fourDividers3.txt", glm::vec4(700, 10, 0, 1), glm::vec4(600, 700, 0, 1), 0.0125f, glm::vec4(0.8, 0.2, 0.6, 1));
+		generateLineToFile("input/fourDividers4.txt", glm::vec4(1200, 300, 0, 1), glm::vec4(800, 700, 0, 1), 0.0125f, glm::vec4(0.6, 0.8, 0.2, 1));
+
+		//monteCarlo.readInputFromFile("input/fourDividers1.txt");
+		//monteCarlo.readInputFromFile("input/fourDividers2.txt");
+		//monteCarlo.readInputFromFile("input/fourDividers3.txt");
+		//monteCarlo.readInputFromFile("input/fourDividers4.txt");
+
+
+
+		//generateBezierToFile("input/bezierAndLine1.txt", {glm::vec4(640, 100, 0, 1),glm::vec4(700, 244, 0, 1), glm::vec4(700, 488, 0, 1), glm::vec4(320, 488, 0, 1)}, 0.001f, glm::vec4(0, 1, 0, 1));
+		//generateLineToFile("input/bezierAndLine2.txt",  glm::vec4(960, 244, 0, 1), glm::vec4(640, 632, 0, 1), 0.001f, glm::vec4(1, 1, 0, 1));
+		//generateLineToFile("input/bezierAndLine3.txt", glm::vec4(10, 10, 0, 1), glm::vec4(100, 100, 0, 1), 0.001f, glm::vec4(0,1,1,1));
+
+		//monteCarlo.readInputFromFile("input/bezierAndLine1.txt");
+		//monteCarlo.readInputFromFile("input/bezierAndLine2.txt");
+		//monteCarlo.readInputFromFile("input/bezierAndLine3.txt");
+
+		//generateBezierToFile("input/twoHalves1.txt", { glm::vec4(640, 100, 0, 1),  glm::vec4(700, 244, 0, 1),  glm::vec4(700, 488, 0, 1), glm::vec4(320, 488, 0, 1)}, 0.001f, glm::vec4(0,1,0,0));
+		//generateBezierToFile("input/twoHalves2.txt", { glm::vec4(960, 244, 0, 1),  glm::vec4(700, 244, 0, 1),  glm::vec4(700, 488, 0, 1), glm::vec4(640, 632, 0, 1) }, 0.001f, glm::vec4(1, 1, 0, 0));
+
+		monteCarlo.readInputFromFile("input/twoHalves1.txt");
+		monteCarlo.readInputFromFile("input/twoHalves2.txt");
+
 		//monteCarlo.readInputFromFile("input/triangle1.txt");
 		//monteCarlo.readInputFromFile("input/triangle2.txt");
 		//monteCarlo.readInputFromFile("input/triangle3.txt");
-		monteCarlo.readInputFromFile("input/triangleAndPoint.txt");
+		/*monteCarlo.readInputFromFile("input/triangleAndPoint.txt");
 		monteCarlo.readInputFromFile("input/triangleAndPoint2.txt");
 		monteCarlo.readInputFromFile("input/triangleAndPoint3.txt");
 		monteCarlo.readInputFromFile("input/triangleAndPoint4.txt");
-
+		*/monteCarlo.setBVHMode(true);
 
 		monteCarlo.generateBVH();
 	}
@@ -161,21 +214,17 @@ void Application::mainLoop(){
 }
 
 
-void Application::generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4>& contP, float gran) {
+void Application::generateBezierToFile(std::string fileSrc, const std::vector<glm::vec4>& contP, float gran, const glm::vec4& col) {
 	std::vector<glm::vec4> points = HelperFunctions::calculateBezierCurve(contP, gran);
 
 	std::ofstream file(fileSrc);
 	file << 4 << " " << 4 << std::endl << std::endl;
-	size_t it = 0ull;
 	
 	glm::vec4 red(1, 0, 0, 1), green(0, 1, 0, 1), blue(0, 0, 1, 1);
 
 	for (const glm::vec4& point : points) {
-		if (it == 30ull) it = 0ull;
-		glm::vec4 col = it < 5ull ? red : it < 20ull ? blue : green;
 		file << point.x << ";" << point.y << ";" << point.z << ";" << point.w << ",";
 		file << col.x << ";" << col.y << ";" << col.z << ";" << col.w << std::endl;
-		it++;
 	}
 
 	file.close();

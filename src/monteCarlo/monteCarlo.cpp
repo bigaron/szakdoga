@@ -126,6 +126,9 @@ void MonteCarlo::drawBVH(){
 	}
 
 	glUseProgram(this->bvhDebugBoundingsShader.graphicsID);
+
+	glEnable(GL_PROGRAM_POINT_SIZE);
+	glPointSize(3.0f);
 	glBindBuffer(GL_ARRAY_BUFFER, boundingPointsVBO);
 	glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec4), static_cast<const void*>(points.data()), GL_STATIC_DRAW);
 	glEnableVertexAttribArray(4);
@@ -264,6 +267,8 @@ void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height,
 	this->textureCorners.emplace_back(glm::vec4(0, this->screenHeight, 0, 1), glm::vec4(0, 0, 0, 1));
 	this->textureCorners.emplace_back(glm::vec4(0, 0, 0, 1), glm::vec4(0, 0, 0, 1));
 
+
+
 	glGenVertexArrays(1, &this->vao);
 	glBindVertexArray(this->vao);
 
@@ -306,8 +311,9 @@ void MonteCarlo::setupMonteCarlo(const MonteCarloParameters& params, int height,
 	glBindImageTexture(0, this->monteCarloTexture, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, this->monteCarloTexture);
-	this->opts._padding1 = 1;
+	this->opts.useBVH = 0;
 	this->opts.pass = 1;
+
 	//this->pixels.resize(static_cast<size_t>(this->screenHeight) * this->screenWidth);
 }
 

@@ -40,7 +40,7 @@ class MonteCarlo {
 	std::vector<glm::vec4> boundingVerts;
 	std::vector<glm::vec4> pixels;
 	
-	bool isDebugMode = false, isPaused = false, depthChanged = true;
+	bool isDebugMode = false, isPaused = false, depthChanged = true, shouldUseBVH = true;
 	int bvhDepth = 0;
 
 	void printDistanceBetweenChildren(const Node& root);
@@ -69,6 +69,7 @@ public:
 		this->bvhDepth = depth; 
 		this->depthChanged = true;
 	}
+	void setBVHMode(bool flag) { opts.useBVH = flag ? 1 : 0; }
 	void setPaused(bool flag) { isPaused = flag; }
 	void getValueAtMouse(int x, int y);
 
